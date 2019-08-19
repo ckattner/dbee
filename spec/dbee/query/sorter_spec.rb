@@ -39,4 +39,34 @@ describe Dbee::Query::Sorter do
       expect(subject).to eql(object2)
     end
   end
+
+  describe 'direction helpers' do
+    context 'when direction is ascending' do
+      let(:config) { { key_path: 'a.b.c' } }
+
+      subject { described_class.new(config) }
+
+      it '#ascending? is true' do
+        expect(subject.ascending?).to be true
+      end
+
+      it '#descending? is false' do
+        expect(subject.descending?).to be false
+      end
+    end
+
+    context 'when direction is descending' do
+      let(:config) { { key_path: 'a.b.c', direction: :descending } }
+
+      subject { described_class.new(config) }
+
+      it '#ascending? is false' do
+        expect(subject.ascending?).to be false
+      end
+
+      it '#descending? is true' do
+        expect(subject.descending?).to be true
+      end
+    end
+  end
 end
