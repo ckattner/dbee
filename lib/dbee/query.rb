@@ -20,13 +20,13 @@ module Dbee
   class Query
     acts_as_hashable
 
-    attr_reader :fields, :sorters, :limit, :filters
+    attr_reader :fields, :filters, :limit, :sorters
 
-    def initialize(fields: [], sorters: [], limit: nil, filters: [])
+    def initialize(fields: [], filters: [], limit: nil, sorters: [])
       @fields   = Field.array(fields)
-      @sorters  = Sorter.array(sorters)
-      @limit    = limit.to_s.empty? ? nil : limit.to_i
       @filters  = Filters.array(filters)
+      @limit    = limit.to_s.empty? ? nil : limit.to_i
+      @sorters  = Sorter.array(sorters)
 
       freeze
     end
@@ -37,9 +37,9 @@ module Dbee
 
     def eql?(other)
       other.fields == fields &&
-        other.sorters == sorters &&
+        other.filters == filters &&
         other.limit == limit &&
-        other.filters == filters
+        other.sorters == sorters
     end
   end
 end

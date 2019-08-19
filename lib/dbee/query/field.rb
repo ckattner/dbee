@@ -28,13 +28,14 @@ module Dbee
         freeze
       end
 
-      def ==(other)
-        eql?(other)
+      def hash
+        "#{key_path}#{display}".hash
       end
 
-      def eql?(other)
+      def ==(other)
         other.key_path == key_path && other.display == display
       end
+      alias eql? ==
     end
   end
 end

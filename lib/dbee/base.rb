@@ -12,10 +12,6 @@ module Dbee
   # Model declaration.
   class Base
     class << self
-      def boolean_column(name, opts = {})
-        columns_by_name[name.to_s] = opts.merge(name: name, type: :boolean)
-      end
-
       def table(name)
         @table_name = name.to_s
 
@@ -39,10 +35,6 @@ module Dbee
         @table_name.to_s
       end
 
-      def columns_by_name
-        @columns_by_name ||= {}
-      end
-
       def associations_by_name
         @associations_by_name ||= {}
       end
@@ -53,12 +45,6 @@ module Dbee
         end
 
         ''
-      end
-
-      def inherited_columns_by_name
-        reversed_subclasses.each_with_object({}) do |subclass, memo|
-          memo.merge!(subclass.columns_by_name)
-        end
       end
 
       def inherited_associations_by_name
@@ -79,7 +65,6 @@ module Dbee
 
       def model_config(name, constraints)
         {
-          columns: columns,
           constraints: constraints,
           models: associations,
           name: name,
@@ -97,16 +82,10 @@ module Dbee
         inherited_table.empty? ? inflected_name : inherited_table
       end
 
-      def columns
-        inherited_columns_by_name.values.each_with_object([]) do |config, memo|
-          memo << Model::Columns.make(config)
-        end
-      end
-
       def associations
         inherited_associations_by_name.values.each_with_object([]) do |config, memo|
           model_klass             = config[:model]
-          associated_constraints  = config[:on]
+          associated_constraints  = config[:constraints]
           name                    = config[:name]
 
           memo << model_klass.to_model(name, associated_constraints)

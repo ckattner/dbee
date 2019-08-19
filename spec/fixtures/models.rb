@@ -16,42 +16,43 @@ module Models
 
   class Demographics < Dbee::Base
     association :phone_numbers, model: PhoneNumbers,
-                                on: { type: :reference, name: :demographic_id, parent: :id }
+                                constraints: {
+                                  type: :reference,
+                                  name: :demographic_id,
+                                  parent: :id
+                                }
   end
 
   class MembersBase < Dbee::Base
     association :demos, model: Demographics,
-                        on: { type: :reference, name: :member_id, parent: :id }
+                        constraints: { type: :reference, name: :member_id, parent: :id }
 
     association :movies, model: Movies,
-                         on: { type: :reference, name: :member_id, parent: :id }
+                         constraints: { type: :reference, name: :member_id, parent: :id }
   end
 
   class Members < MembersBase
-    association :favorite_comic_movies, model: Movies, on: [
+    association :favorite_comic_movies, model: Movies, constraints: [
       { type: :reference, name: :member_id, parent: :id },
       { type: :static, name: :genre, value: 'comic' }
     ]
 
-    association :favorite_mystery_movies, model: Movies, on: [
+    association :favorite_mystery_movies, model: Movies, constraints: [
       { type: :reference, name: :member_id, parent: :id },
       { type: :static, name: :genre, value: 'mystery' }
     ]
 
-    association :favorite_comedy_movies, model: Movies, on: [
+    association :favorite_comedy_movies, model: Movies, constraints: [
       { type: :reference, name: :member_id, parent: :id },
       { type: :static, name: :genre, value: 'comedy' }
     ]
   end
 
   class TheatersBase < Dbee::Base
-    boolean_column :active, nullable: false
   end
 
   class Theaters < TheatersBase
-    boolean_column :inspected
-
-    association :members, model: Members, on: [
+    association :members, model: Members, constraints: [
       { type: :reference, name: :tid, parent: :id },
       { type: :reference, name: :partition, parent: :partition }
     ]
@@ -74,5 +75,41 @@ module Models
 
   class E < B
     table 'table_set_to_e'
+  end
+end
+
+module ReadmeDataModels
+  class PhoneNumbers < Dbee::Base
+    table :phones
+  end
+
+  class Notes < Dbee::Base
+  end
+
+  class Patients < Dbee::Base
+    association :notes, model: Notes, constraints: {
+      type: :reference, name: :patient_id, parent: :id
+    }
+
+    association :work_phone_number, model: PhoneNumbers, constraints: [
+      { type: :reference, name: :patient_id, parent: :id },
+      { type: :static, name: :phone_number_type, value: 'work' }
+    ]
+
+    association :cell_phone_number, model: PhoneNumbers, constraints: [
+      { type: :reference, name: :patient_id, parent: :id },
+      { type: :static, name: :phone_number_type, value: 'cell' }
+    ]
+
+    association :fax_phone_number, model: PhoneNumbers, constraints: [
+      { type: :reference, name: :patient_id, parent: :id },
+      { type: :static, name: :phone_number_type, value: 'fax' }
+    ]
+  end
+
+  class Practices < Dbee::Base
+    association :patients, model: Patients, constraints: {
+      type: :reference, name: :practice_id, parent: :id
+    }
   end
 end

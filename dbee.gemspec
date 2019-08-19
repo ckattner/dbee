@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Adhoc Reporting SQL Generator'
 
   s.description = <<-DESCRIPTION
-    Dbee provides a simple-to-use query API.  The query API can produce SQL using other ORMs, such as Arel/ActiveRecord.  The targeted use-case for Dbee is ad-hoc reporting, so the total SQL feature-set that Dbee supports is rather limited.
+    Dbee provides a simple-to-use data modeling and query API.  The query API can produce SQL using other ORMs, such as Arel/ActiveRecord.  The targeted use-case for Dbee is ad-hoc reporting, so the total SQL feature-set that Dbee supports is rather limited.
   DESCRIPTION
 
   s.authors     = ['Matthew Ruggio']

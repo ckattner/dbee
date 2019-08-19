@@ -7,7 +7,6 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'model/columns'
 require_relative 'model/constraints'
 
 module Dbee
@@ -20,16 +19,15 @@ module Dbee
 
     class ModelNotFound < StandardError; end
 
-    attr_reader :name, :constraints
+    attr_reader :constraints, :name
 
-    def initialize(name:, table: '', models: [], constraints: [], columns: [])
+    def initialize(name:, constraints: [], models: [], table: '')
       raise ArgumentError, 'name is required' if name.to_s.empty?
 
       @name             = name.to_s
-      @table            = table.to_s
-      @models_by_name   = name_hash(Model.array(models))
       @constraints      = Constraints.array(constraints)
-      @columns_by_name  = name_hash(Columns.array(columns))
+      @models_by_name   = name_hash(Model.array(models))
+      @table            = table.to_s
 
       freeze
     end
@@ -44,14 +42,6 @@ module Dbee
 
     def models
       models_by_name.values
-    end
-
-    def columns
-      columns_by_name.values
-    end
-
-    def column(name)
-      columns_by_name[name.to_s] || Columns::Undefined.new(name: name)
     end
 
     def ancestors(parts = [], alias_chain = [], found = {})
@@ -78,13 +68,12 @@ module Dbee
       other.name == name &&
         other.table == table &&
         other.models == models &&
-        other.constraints == constraints &&
-        other.columns == columns
+        other.constraints == constraints
     end
     alias eql? ==
 
     private
 
-    attr_reader :models_by_name, :columns_by_name
+    attr_reader :models_by_name
   end
 end

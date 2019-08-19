@@ -8,6 +8,7 @@
 #
 
 require 'spec_helper'
+require 'fixtures/models'
 
 describe Dbee::Model do
   describe '#initialize' do
@@ -97,6 +98,16 @@ describe Dbee::Model do
 
       expect(model1).to eq(model2)
       expect(model1).to eql(model2)
+    end
+  end
+
+  context 'README examples' do
+    specify 'code-first and configuration-first models are equal' do
+      config = yaml_fixture('models.yaml')['Readme']
+
+      config_model = described_class.make(config)
+
+      expect(config_model).to eq(ReadmeDataModels::Practices.to_model)
     end
   end
 end

@@ -14,13 +14,25 @@ module Dbee
       class Base
         acts_as_hashable
 
-        attr_reader :key_path
+        attr_reader :key_path, :value
 
-        def initialize(key_path:)
+        def initialize(key_path:, value: nil)
           raise ArgumentError, 'key_path is required' if key_path.to_s.empty?
 
           @key_path = KeyPath.get(key_path)
+          @value    = value
+
+          freeze
         end
+
+        def hash
+          "#{key_path}#{value}".hash
+        end
+
+        def ==(other)
+          other.key_path == key_path && other.value == value
+        end
+        alias eql? ==
       end
     end
   end

@@ -17,6 +17,8 @@ module Dbee
     # Say the column "name" is located on "users", you could use the key path: "name".
     # This also works for deeper nested columns in the same fashion.
     class KeyPath
+      extend Forwardable
+
       class << self
         def get(obj)
           obj.is_a?(self.class) ? obj : new(obj)
@@ -26,6 +28,8 @@ module Dbee
       SPLIT_CHAR = '.'
 
       attr_reader :value, :ancestor_names, :column_name
+
+      def_delegators :value, :to_s
 
       def initialize(value)
         raise 'Value is required' if value.to_s.empty?
@@ -41,17 +45,10 @@ module Dbee
         value.hash
       end
 
-      def to_s
-        value
-      end
-
       def ==(other)
-        eql?(other)
-      end
-
-      def eql?(other)
         other.to_s == to_s
       end
+      alias eql? ==
     end
   end
 end

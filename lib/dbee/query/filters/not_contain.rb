@@ -7,13 +7,13 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'value_base'
+require_relative 'base'
 
 module Dbee
   class Query
     class Filters
       # Equivalent to a SQL x NOT LIKE '%value%' statement.
-      class NotContain < ValueBase; end
+      class NotContain < Base; end
     end
   end
 end

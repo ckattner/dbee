@@ -19,8 +19,8 @@ module Dbee
     class Constraints
       acts_as_hashable_factory
 
-      register 'reference', Constraints::Reference
-      register 'static',    Constraints::Static
+      register 'reference', Reference
+      register 'static',    Static
     end
   end
 end

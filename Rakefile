@@ -7,13 +7,9 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'base'
+require 'bundler/gem_tasks'
+require 'rspec/core/rake_task'
 
-module Dbee
-  class Query
-    class Filters
-      # Equivalent to a SQL WHERE x != 'y' statement.
-      class NotEquals < Base; end
-    end
-  end
-end
+RSpec::Core::RakeTask.new(:spec)
+
+task default: :spec

@@ -21,23 +21,15 @@ module Dbee
       end
       include Direction
 
-      attr_reader :key_path, :direction
+      attr_reader :direction, :key_path
 
       def initialize(key_path:, direction: ASCENDING)
         raise ArgumentError, 'key_path is required' if key_path.to_s.empty?
 
-        @key_path = KeyPath.get(key_path)
-        @direction = Direction.const_get(direction.to_s.upcase.to_sym)
+        @direction  = Direction.const_get(direction.to_s.upcase.to_sym)
+        @key_path   = KeyPath.get(key_path)
 
         freeze
-      end
-
-      def ==(other)
-        eql?(other)
-      end
-
-      def eql?(other)
-        other.key_path == key_path && other.direction == direction
       end
 
       def descending?
@@ -47,6 +39,15 @@ module Dbee
       def ascending?
         !descending?
       end
+
+      def hash
+        "#{key_path}#{direction}".hash
+      end
+
+      def ==(other)
+        other.key_path == key_path && other.direction == direction
+      end
+      alias eql? ==
     end
   end
 end

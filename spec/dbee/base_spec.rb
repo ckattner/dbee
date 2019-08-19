@@ -12,7 +12,8 @@ require 'fixtures/models'
 
 describe Dbee::Base do
   it 'compiles to Model instance correctly' do
-    expected_config = yaml_fixture('models.yaml')['Theaters, Members, and Movies']
+    model_name      = 'Theaters, Members, and Movies'
+    expected_config = yaml_fixture('models.yaml')[model_name]
 
     expected_model = Dbee::Model.make(expected_config)
 
