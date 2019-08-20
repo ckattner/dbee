@@ -10,22 +10,24 @@
 require 'spec_helper'
 
 describe Dbee::Query::Filters do
-  CONFIG = { key_path: 'a.b.c', value: :d }.freeze
+  FILTERS_CONFIG = { key_path: 'a.b.c', value: :d }.freeze
 
-  FACTORIES = {
-    Dbee::Query::Filters::Contains => CONFIG.merge(type: :contains),
-    Dbee::Query::Filters::Equals => CONFIG.merge(type: :equals),
-    Dbee::Query::Filters::GreaterThanOrEqualTo => CONFIG.merge(type: :greater_than_or_equal_to),
-    Dbee::Query::Filters::GreaterThan => CONFIG.merge(type: :greater_than),
-    Dbee::Query::Filters::LessThanOrEqualTo => CONFIG.merge(type: :less_than_or_equal_to),
-    Dbee::Query::Filters::LessThan => CONFIG.merge(type: :less_than),
-    Dbee::Query::Filters::NotContain => CONFIG.merge(type: :not_contain),
-    Dbee::Query::Filters::NotEquals => CONFIG.merge(type: :not_equals),
-    Dbee::Query::Filters::NotStartWith => CONFIG.merge(type: :not_start_with),
-    Dbee::Query::Filters::StartsWith => CONFIG.merge(type: :starts_with)
+  FILTER_FACTORIES = {
+    Dbee::Query::Filters::Contains => FILTERS_CONFIG.merge(type: :contains),
+    Dbee::Query::Filters::Equals => FILTERS_CONFIG.merge(type: :equals),
+    Dbee::Query::Filters::GreaterThanOrEqualTo => FILTERS_CONFIG.merge(
+      type: :greater_than_or_equal_to
+    ),
+    Dbee::Query::Filters::GreaterThan => FILTERS_CONFIG.merge(type: :greater_than),
+    Dbee::Query::Filters::LessThanOrEqualTo => FILTERS_CONFIG.merge(type: :less_than_or_equal_to),
+    Dbee::Query::Filters::LessThan => FILTERS_CONFIG.merge(type: :less_than),
+    Dbee::Query::Filters::NotContain => FILTERS_CONFIG.merge(type: :not_contain),
+    Dbee::Query::Filters::NotEquals => FILTERS_CONFIG.merge(type: :not_equals),
+    Dbee::Query::Filters::NotStartWith => FILTERS_CONFIG.merge(type: :not_start_with),
+    Dbee::Query::Filters::StartsWith => FILTERS_CONFIG.merge(type: :starts_with)
   }.freeze
 
-  FACTORIES.each_pair do |constant, config|
+  FILTER_FACTORIES.each_pair do |constant, config|
     it "should instantiate #{constant} objects" do
       expect(described_class.make(config)).to be_a(constant)
     end

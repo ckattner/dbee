@@ -49,9 +49,12 @@ module Models
   end
 
   class TheatersBase < Dbee::Base
+    boolean_column :active, nullable: false
   end
 
   class Theaters < TheatersBase
+    boolean_column :inspected
+
     association :members, model: Members, constraints: [
       { type: :reference, name: :tid, parent: :id },
       { type: :reference, name: :partition, parent: :partition }
@@ -108,6 +111,8 @@ module ReadmeDataModels
   end
 
   class Practices < Dbee::Base
+    boolean_column :active, nullable: false
+
     association :patients, model: Patients, constraints: {
       type: :reference, name: :practice_id, parent: :id
     }

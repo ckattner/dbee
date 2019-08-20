@@ -10,14 +10,14 @@
 require 'spec_helper'
 
 describe Dbee::Model::Constraints do
-  CONFIG = { name: :a }.freeze
+  CONSTRAINT_CONFIG = { name: :a }.freeze
 
-  FACTORIES = {
-    Dbee::Model::Constraints::Reference => CONFIG.merge(parent: :b, type: :reference),
-    Dbee::Model::Constraints::Static => CONFIG.merge(value: :b, type: :static)
+  CONSTRAINT_FACTORIES = {
+    Dbee::Model::Constraints::Reference => CONSTRAINT_CONFIG.merge(parent: :b, type: :reference),
+    Dbee::Model::Constraints::Static => CONSTRAINT_CONFIG.merge(value: :b, type: :static)
   }.freeze
 
-  FACTORIES.each_pair do |constant, config|
+  CONSTRAINT_FACTORIES.each_pair do |constant, config|
     it "should instantiate #{constant} objects" do
       expect(described_class.make(config)).to be_a(constant)
     end

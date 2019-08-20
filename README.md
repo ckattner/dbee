@@ -115,6 +115,8 @@ module ReadmeDataModels
   end
 
   class Practices < Dbee::Base
+    boolean_column :active, nullable: false
+
     association :patients, model: Patients, constraints: {
       type: :reference, name: :practice_id, parent: :id
     }
@@ -123,7 +125,10 @@ end
 
 ````
 
-*Note: the 'table' directive is optional, and if omitted, the classes name will be turned into snake_case and used.  In the above example you can see we wanted the class name of PhoneNumbers but the table is actually 'phones'*
+A couple notes:
+
+* the 'table' directive is optional, and if omitted, the classes name will be turned into snake_case and used.  In the above example you can see we wanted the class name of PhoneNumbers but the table is actually 'phones'
+* it is not required that all columns be explicitly defined but it does provide value coercion.  By default, all undefined columns are of type Dbee::Model::Columns::Undefined.
 
 #### Configuration-First Data Modeling
 
@@ -131,6 +136,10 @@ You can choose to alternatively describe your data model using configuration.  T
 
 ````yaml
 name: practices
+columns:
+  - name: active
+    type: boolean
+    nullable: false
 models:
   - name: patients
     constraints:

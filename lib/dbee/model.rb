@@ -7,6 +7,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+require_relative 'model/columns'
 require_relative 'model/constraints'
 
 module Dbee
@@ -21,10 +22,11 @@ module Dbee
 
     attr_reader :constraints, :name
 
-    def initialize(name:, constraints: [], models: [], table: '')
+    def initialize(name:, columns: [], constraints: [], models: [], table: '')
       raise ArgumentError, 'name is required' if name.to_s.empty?
 
       @name             = name.to_s
+      @columns_by_name  = name_hash(Columns.array(columns))
       @constraints      = Constraints.array(constraints)
       @models_by_name   = name_hash(Model.array(models))
       @table            = table.to_s
@@ -42,6 +44,14 @@ module Dbee
 
     def models
       models_by_name.values
+    end
+
+    def columns
+      columns_by_name.values
+    end
+
+    def column(name)
+      columns_by_name[name.to_s] || Columns::Undefined.new(name: name)
     end
 
     def ancestors(parts = [], alias_chain = [], found = {})
@@ -68,12 +78,13 @@ module Dbee
       other.name == name &&
         other.table == table &&
         other.models == models &&
-        other.constraints == constraints
+        other.constraints == constraints &&
+        other.columns == columns
     end
     alias eql? ==
 
     private
 
-    attr_reader :models_by_name
+    attr_reader :models_by_name, :columns_by_name
   end
 end
