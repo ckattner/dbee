@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/bluemarblepayroll/dbee'
   s.license     = 'MIT'
 
-  s.required_ruby_version = '>= 2.5.3'
+  s.required_ruby_version = '>= 2.4.6'
 
   s.add_dependency('acts_as_hashable', '~>1', '>=1.1.0')
 
@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('pry', '~>0')
   s.add_development_dependency('rake', '~> 12')
   s.add_development_dependency('rspec')
-  s.add_development_dependency('rubocop', '~>0.63.1')
-  s.add_development_dependency('simplecov', '~>0.16.1')
-  s.add_development_dependency('simplecov-console', '~>0.4.2')
+  s.add_development_dependency('rubocop', '~>0.74.0')
+  s.add_development_dependency('simplecov', '~>0.17.0')
+  s.add_development_dependency('simplecov-console', '~>0.5.0')
 end
