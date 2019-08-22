@@ -7,7 +7,6 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'model/columns'
 require_relative 'model/constraints'
 
 module Dbee
@@ -20,18 +19,17 @@ module Dbee
 
     private_constant :JOIN_CHAR
 
-    class ModelNotFound < StandardError; end
+    class ModelNotFoundError < StandardError; end
 
     attr_reader :constraints, :name
 
-    def initialize(name:, columns: [], constraints: [], models: [], table: '')
+    def initialize(name:, constraints: [], models: [], table: '')
       raise ArgumentError, 'name is required' if name.to_s.empty?
 
-      @name             = name.to_s
-      @columns_by_name  = name_hash(Columns.array(columns))
-      @constraints      = Constraints.array(constraints)
-      @models_by_name   = name_hash(Model.array(models))
-      @table            = table.to_s
+      @name           = name.to_s
+      @constraints    = Constraints.array(constraints)
+      @models_by_name = name_hash(Model.array(models))
+      @table          = table.to_s
 
       freeze
     end
@@ -48,14 +46,6 @@ module Dbee
       models_by_name.values
     end
 
-    def columns
-      columns_by_name.values
-    end
-
-    def column(name)
-      columns_by_name[name.to_s] || Columns::Undefined.new(name: name)
-    end
-
     def ancestors(parts = [], alias_chain = [], found = {})
       return found if Array(parts).empty?
 
@@ -65,7 +55,7 @@ module Dbee
 
       model = models_by_name[model_name.to_s]
 
-      raise ModelNotFound, "Cannot traverse: #{model_name}" unless model
+      raise ModelNotFoundError, "Cannot traverse: #{model_name}" unless model
 
       new_alias_chain = alias_chain + [model_name]
 
@@ -80,13 +70,12 @@ module Dbee
       other.name == name &&
         other.table == table &&
         other.models == models &&
-        other.constraints == constraints &&
-        other.columns == columns
+        other.constraints == constraints
     end
     alias eql? ==
 
     private
 
-    attr_reader :models_by_name, :columns_by_name
+    attr_reader :models_by_name
   end
 end

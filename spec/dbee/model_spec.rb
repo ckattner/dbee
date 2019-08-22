@@ -55,28 +55,6 @@ describe Dbee::Model do
     end
   end
 
-  describe '#column' do
-    let(:yaml_entities) { yaml_fixture('models.yaml') }
-
-    let(:entity_hash) { yaml_entities['Theaters, Members, and Movies'] }
-
-    subject { described_class.make(entity_hash) }
-
-    specify 'returns column instance if it exists' do
-      expected = Dbee::Model::Columns::Boolean.make(name: 'active', nullable: false)
-      expect(subject.column('active')).to eq(expected)
-
-      expected = Dbee::Model::Columns::Boolean.make(name: 'inspected', nullable: true)
-      expect(subject.column('inspected')).to eq(expected)
-    end
-
-    specify 'returns unknown column instance if it does not exist' do
-      expected = Dbee::Model::Columns::Boolean.make(name: 'doesnt_exist')
-
-      expect(subject.column('doesnt_exist')).to eq(expected)
-    end
-  end
-
   describe '#ancestors' do
     let(:yaml_entities) { yaml_fixture('models.yaml') }
 
