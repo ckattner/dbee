@@ -27,6 +27,8 @@ module Dbee
 
       SPLIT_CHAR = '.'
 
+      private_constant :SPLIT_CHAR
+
       attr_reader :value, :ancestor_names, :column_name
 
       def_delegators :value, :to_s

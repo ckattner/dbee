@@ -18,6 +18,8 @@ module Dbee
 
     JOIN_CHAR = '.'
 
+    private_constant :JOIN_CHAR
+
     class ModelNotFound < StandardError; end
 
     attr_reader :constraints, :name

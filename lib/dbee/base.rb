@@ -36,7 +36,7 @@ module Dbee
       end
 
       def table_name
-        @table_name.to_s
+        @table_name || ''
       end
 
       def columns_by_name
@@ -47,12 +47,12 @@ module Dbee
         @associations_by_name ||= {}
       end
 
-      def inherited_table_name
-        subclasses.each do |subclass|
-          return subclass.table_name unless subclass.table_name.empty?
-        end
+      def table_name?
+        !table_name.empty?
+      end
 
-        ''
+      def inherited_table_name
+        subclasses.find(&:table_name?)&.table_name || ''
       end
 
       def inherited_columns_by_name
