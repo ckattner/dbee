@@ -14,7 +14,7 @@ describe Dbee do
   describe '#sql' do
     let(:provider) { Dbee::Providers::NullProvider.new }
 
-    let(:query) { {} }
+    let(:query) { { fields: [{ key_path: :a }] } }
 
     it 'accepts a hash as a model and passes a Model instance to provider#sql' do
       model = { name: 'something' }

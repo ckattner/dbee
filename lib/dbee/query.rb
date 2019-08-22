@@ -20,10 +20,18 @@ module Dbee
   class Query
     acts_as_hashable
 
+    class NoFieldsError < StandardError; end
+
     attr_reader :fields, :filters, :limit, :sorters
 
-    def initialize(fields: [], filters: [], limit: nil, sorters: [])
-      @fields   = Field.array(fields)
+    def initialize(fields:, filters: [], limit: nil, sorters: [])
+      @fields = Field.array(fields)
+
+      # If no fields were passed into a query then we will have no data to return.
+      # Let's raise a hard error here and let the consumer deal with it since this may
+      # have implications in downstream SQL generators.
+      raise NoFieldsError if @fields.empty?
+
       @filters  = Filters.array(filters)
       @limit    = limit.to_s.empty? ? nil : limit.to_i
       @sorters  = Sorter.array(sorters)

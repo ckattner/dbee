@@ -31,6 +31,16 @@ describe Dbee::Query do
     expect(subject).to eq(described_class.make(config))
   end
 
+  describe '#initialize' do
+    it 'should raise an ArgumentError if fields keyword is missing' do
+      expect { described_class.new }.to raise_error(ArgumentError)
+    end
+
+    it 'should raise a NoFieldsError if no fields were passed in' do
+      expect { described_class.new(fields: []) }.to raise_error(Dbee::Query::NoFieldsError)
+    end
+  end
+
   context 'README examples' do
     EXAMPLES = {
       'Get all practices' => {
