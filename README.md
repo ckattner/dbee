@@ -11,7 +11,7 @@ Dbee arose out of a need for an ad-hoc reporting solution that included:
 
 Dbee provides a very simple Data Modeling and Query API's and as such it is not meant to replace a traditional ORM or your data persistence layer, but compliment them.  This library's goal is to output the SQL statement needed and **nothing** more.
 
-Other solutions considered included:
+Other solutions considered:
 
 * [Squeel](https://github.com/activerecord-hackery/squeel) - Was in production use up until Rails 5, then saw compatibility issues.
 * [BabySqueel](https://github.com/rzane/baby_squeel) - Tested with some success up until Rails 5.2.1, then saw compatibility issues.
@@ -82,7 +82,7 @@ There are two ways to model this schema using Dbee:
 
 #### Code-First Data Modeling
 
-Code-first data modeling involves creating sub-classes of Dbee::Base that describes the tables, columns, and associations.  We could model the above example as:
+Code-first data modeling involves creating sub-classes of Dbee::Base that describes the tables and associations.  We could model the above example as:
 
 ````ruby
 module ReadmeDataModels
@@ -115,8 +115,6 @@ module ReadmeDataModels
   end
 
   class Practices < Dbee::Base
-    boolean_column :active, nullable: false
-
     association :patients, model: Patients, constraints: {
       type: :reference, name: :practice_id, parent: :id
     }
@@ -125,10 +123,8 @@ end
 
 ````
 
-A couple notes:
+**Note:** the 'table' directive is optional, and if omitted, the classes name will be turned into snake_case and used.  In the above example you can see we wanted the class name of PhoneNumbers but the table is actually 'phones'
 
-* the 'table' directive is optional, and if omitted, the classes name will be turned into snake_case and used.  In the above example you can see we wanted the class name of PhoneNumbers but the table is actually 'phones'
-* it is not required that all columns be explicitly defined but it does provide value coercion.  By default, all undefined columns are of type Dbee::Model::Columns::Undefined.
 
 #### Configuration-First Data Modeling
 
@@ -136,10 +132,6 @@ You can choose to alternatively describe your data model using configuration.  T
 
 ````yaml
 name: practices
-columns:
-  - name: active
-    type: boolean
-    nullable: false
 models:
   - name: patients
     constraints:
