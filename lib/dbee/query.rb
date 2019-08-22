@@ -32,14 +32,11 @@ module Dbee
     end
 
     def ==(other)
-      eql?(other)
-    end
-
-    def eql?(other)
       other.fields == fields &&
         other.filters == filters &&
         other.limit == limit &&
         other.sorters == sorters
     end
+    alias eql? ==
   end
 end

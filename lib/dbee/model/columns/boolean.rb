@@ -12,8 +12,8 @@ require_relative 'undefined'
 module Dbee
   class Model
     class Columns
-      # Describes a boolean column.  The main value here is the value is pretty pliable.
-      # For example: the value 'y' or '1' will be coerced to true.
+      # Describes a boolean column that can accept a wide range of values and still resolves to
+      # a boolean, such as: true, t, yes, y, 1, false, f, n, 0, nil, null.
       class Boolean < Undefined
         attr_reader :nullable
 
