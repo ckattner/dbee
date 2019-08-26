@@ -69,10 +69,14 @@ module Dbee
     def ==(other)
       other.name == name &&
         other.table == table &&
-        other.models == models &&
-        other.constraints == constraints
+        other.models.sort == models.sort &&
+        other.constraints.sort == constraints.sort
     end
     alias eql? ==
+
+    def <=>(other)
+      other.name <=> name
+    end
 
     private
 

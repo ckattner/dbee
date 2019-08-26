@@ -49,12 +49,15 @@ module Models
   end
 
   class TheatersBase < Dbee::Base
-  end
-
-  class Theaters < TheatersBase
     association :members, model: Members, constraints: [
       { type: :reference, name: :tid, parent: :id },
       { type: :reference, name: :partition, parent: :partition }
+    ]
+  end
+
+  class Theaters < TheatersBase
+    association :parent_theater, model: self, constraints: [
+      { type: :reference, name: :parent_theater_id, parent: :id }
     ]
   end
 

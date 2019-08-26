@@ -22,6 +22,10 @@ module Dbee
           @name = name.to_s
         end
 
+        def <=>(other)
+          other.name <=> name
+        end
+
         def hash
           name.hash
         end

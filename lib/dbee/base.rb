@@ -24,11 +24,11 @@ module Dbee
         self
       end
 
-      def to_model(name = nil, constraints = [])
+      def to_model(name = nil, constraints = [], from = nil)
         name  = derive_name(name)
-        key   = [name, constraints]
+        key   = [name, constraints, from]
 
-        to_models[key] ||= Model.make(model_config(name, constraints))
+        to_models[key] ||= Model.make(model_config(name, constraints, from))
       end
 
       def table_name
@@ -63,10 +63,10 @@ module Dbee
         subclasses.reverse
       end
 
-      def model_config(name, constraints)
+      def model_config(name, constraints, from)
         {
           constraints: constraints,
-          models: associations,
+          models: associations(from),
           name: name,
           table: derive_table
         }
@@ -82,13 +82,15 @@ module Dbee
         inherited_table.empty? ? inflected_name : inherited_table
       end
 
-      def associations
-        inherited_associations_by_name.values.each_with_object([]) do |config, memo|
+      def associations(from)
+        inherited_associations_by_name.values
+                                      .reject { |c| c[:name].to_s == from.to_s }
+                                      .each_with_object([]) do |config, memo|
           model_klass             = config[:model]
           associated_constraints  = config[:constraints]
           name                    = config[:name]
 
-          memo << model_klass.to_model(name, associated_constraints)
+          memo << model_klass.to_model(name, associated_constraints, name)
         end
       end
 
