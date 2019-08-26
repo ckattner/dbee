@@ -17,7 +17,6 @@ module Models
   class Demographics < Dbee::Base
     association :phone_numbers, model: PhoneNumbers,
                                 constraints: {
-                                  type: :reference,
                                   name: :demographic_id,
                                   parent: :id
                                 }
@@ -28,7 +27,7 @@ module Models
                         constraints: { type: :reference, name: :member_id, parent: :id }
 
     association :movies, model: Movies,
-                         constraints: { type: :reference, name: :member_id, parent: :id }
+                         constraints: { name: :member_id, parent: :id }
   end
 
   class Members < MembersBase

@@ -5,11 +5,9 @@ Theaters, Members, and Movies:
     - name: members
       table: members
       constraints:
-        - type: reference
-          parent: id
+        - parent: id
           name: tid
-        - type: reference
-          parent: partition
+        - parent: partition
           name: partition
       models:
         - name: demos

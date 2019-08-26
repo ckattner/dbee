@@ -21,6 +21,7 @@ module Dbee
 
       register 'reference', Reference
       register 'static',    Static
+      register '',          Reference # When type is not present this will be the default
     end
   end
 end
