@@ -46,5 +46,9 @@ module Dbee
         other.sorters == sorters
     end
     alias eql? ==
+
+    def key_paths
+      (fields.map(&:key_path) + filters.map(&:key_path) + sorters.map(&:key_path)).uniq.sort
+    end
   end
 end

@@ -23,7 +23,7 @@ module Dbee
         end
 
         def <=>(other)
-          other.name <=> name
+          name <=> other.name
         end
 
         def hash

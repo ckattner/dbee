@@ -51,6 +51,10 @@ module Dbee
         other.to_s == to_s
       end
       alias eql? ==
+
+      def <=>(other)
+        value <=> other.value
+      end
     end
   end
 end

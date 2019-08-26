@@ -86,11 +86,11 @@ module Dbee
         inherited_associations_by_name.values
                                       .reject { |c| c[:name].to_s == from.to_s }
                                       .each_with_object([]) do |config, memo|
-          model_klass             = constantize(config[:model])
+          model_constant          = constantize(config[:model])
           associated_constraints  = config[:constraints]
           name                    = config[:name]
 
-          memo << model_klass.to_model(name, associated_constraints, name)
+          memo << model_constant.to_model(name, associated_constraints, name)
         end
       end
 
@@ -108,11 +108,7 @@ module Dbee
       end
 
       def constantize(value)
-        if value.is_a?(String) || value.is_a?(Symbol)
-          Object.const_get(value)
-        else
-          value
-        end
+        value.is_a?(String) || value.is_a?(Symbol) ? Object.const_get(value) : value
       end
     end
   end

@@ -21,6 +21,10 @@ describe Dbee::Query do
         { key_path: :sort_me },
         { key_path: :sort_me_too, direction: :descending }
       ],
+      filters: [
+        { key_path: 'filter_me.a_little', value: 'something' },
+        { key_path: 'matt.nick.sam', value: 'something' }
+      ],
       limit: 125
     }
   end
@@ -38,6 +42,16 @@ describe Dbee::Query do
 
     it 'should raise a NoFieldsError if no fields were passed in' do
       expect { described_class.new(fields: []) }.to raise_error(Dbee::Query::NoFieldsError)
+    end
+  end
+
+  describe '#key_paths' do
+    it 'should get filter, sorter, and field key_paths' do
+      expected = (config[:fields].map { |f| f[:key_path].to_s } +
+        config[:filters].map { |f| f[:key_path].to_s } +
+        config[:sorters].map { |s| s[:key_path].to_s }).uniq.sort
+
+      expect(subject.key_paths).to eq(expected)
     end
   end
 

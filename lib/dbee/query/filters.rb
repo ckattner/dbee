@@ -25,6 +25,7 @@ module Dbee
     class Filters
       acts_as_hashable_factory
 
+      register '',                          Equals # Default if type is blank.
       register 'contains',                  Contains
       register 'equals',                    Equals
       register 'greater_than_or_equal_to',  GreaterThanOrEqualTo

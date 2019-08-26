@@ -75,7 +75,7 @@ module Dbee
     alias eql? ==
 
     def <=>(other)
-      other.name <=> name
+      name <=> other.name
     end
 
     private
