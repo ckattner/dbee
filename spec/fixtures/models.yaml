@@ -60,8 +60,8 @@ Theaters, Members, and Movies:
       table: theaters
       constraints:
         - type: reference
-          name: parent_theater_id
-          parent: id
+          name: id
+          parent: parent_theater_id
       models:
         - name: members
           table: members

@@ -86,7 +86,7 @@ module Dbee
         inherited_associations_by_name.values
                                       .reject { |c| c[:name].to_s == from.to_s }
                                       .each_with_object([]) do |config, memo|
-          model_klass             = config[:model]
+          model_klass             = constantize(config[:model])
           associated_constraints  = config[:constraints]
           name                    = config[:name]
 
@@ -105,6 +105,14 @@ module Dbee
             .gsub(/([a-z\d])([A-Z])/, '\1_\2')
             .tr('-', '_')
             .downcase
+      end
+
+      def constantize(value)
+        if value.is_a?(String) || value.is_a?(Symbol)
+          Object.const_get(value)
+        else
+          value
+        end
       end
     end
   end

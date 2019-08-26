@@ -15,7 +15,7 @@ module Models
   end
 
   class Demographics < Dbee::Base
-    association :phone_numbers, model: PhoneNumbers,
+    association :phone_numbers, model: 'Models::PhoneNumbers',
                                 constraints: {
                                   name: :demographic_id,
                                   parent: :id
@@ -56,7 +56,7 @@ module Models
 
   class Theaters < TheatersBase
     association :parent_theater, model: self, constraints: [
-      { type: :reference, name: :parent_theater_id, parent: :id }
+      { type: :reference, name: :id, parent: :parent_theater_id }
     ]
   end
 
@@ -113,5 +113,43 @@ module ReadmeDataModels
     association :patients, model: Patients, constraints: {
       type: :reference, name: :practice_id, parent: :id
     }
+  end
+end
+
+module Cycles
+  class A < Dbee::Base
+    association :b, model: 'Cycles::B'
+
+    association :c, model: 'Cycles::C'
+
+    association :d, model: 'Cycles::D'
+
+    association :g, model: 'Cycles::G'
+  end
+
+  class B < Dbee::Base
+    association :b1, model: 'Cycles::B'
+
+    association :b2, model: 'Cycles::B'
+  end
+
+  class C < Dbee::Base
+    association :e, model: 'Cycles::E'
+  end
+
+  class D < Dbee::Base
+    association :f, model: 'Cycles::F'
+  end
+
+  class E < Dbee::Base
+    association :g, model: 'Cycles::G'
+  end
+
+  class F < Dbee::Base
+    association :a, model: 'Cycles::A'
+  end
+
+  class G < Dbee::Base
+    association :g, model: 'Cycles::G'
   end
 end
