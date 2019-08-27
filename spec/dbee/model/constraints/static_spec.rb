@@ -15,6 +15,14 @@ describe Dbee::Model::Constraints::Static do
 
     subject { described_class.new(config) }
 
+    describe '#initialize' do
+      it 'requires either a name or parent' do
+        expect { described_class.new }.to                         raise_error(ArgumentError)
+        expect { described_class.new(name: '', parent: '') }.to   raise_error(ArgumentError)
+        expect { described_class.new(name: nil, parent: nil) }.to raise_error(ArgumentError)
+      end
+    end
+
     specify '#hash produces same output as concatenated string hash of name and parent' do
       expect(subject.hash).to eq("#{config[:name].hash}#{config[:value]}".hash)
     end

@@ -24,7 +24,7 @@ describe Dbee::Model::Constraints::Reference do
     subject { described_class.new(config) }
 
     specify '#hash produces same output as concatenated string hash of name and parent' do
-      expect(subject.hash).to eq("#{config[:name].hash}#{config[:parent]}".hash)
+      expect(subject.hash).to eq("#{config[:name]}#{config[:parent]}".hash)
     end
 
     specify '#== and #eql? compare attributes' do

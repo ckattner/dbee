@@ -14,24 +14,23 @@ module Dbee
       class Base
         acts_as_hashable
 
-        attr_reader :name
+        attr_reader :name, :parent
 
-        def initialize(name:)
-          raise ArgumentError, 'name is required' if name.to_s.empty?
-
-          @name = name.to_s
+        def initialize(name: '', parent: '')
+          @name   = name.to_s
+          @parent = parent.to_s
         end
 
         def <=>(other)
-          name <=> other.name
+          "#{name}#{parent}" <=> "#{other.name}#{other.parent}"
         end
 
         def hash
-          name.hash
+          "#{name}#{parent}".hash
         end
 
         def ==(other)
-          other.name == name
+          other.name == name && other.parent == parent
         end
         alias eql? ==
       end

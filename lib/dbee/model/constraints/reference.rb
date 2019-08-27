@@ -19,23 +19,13 @@ module Dbee
         attr_reader :parent
 
         def initialize(name:, parent:)
-          super(name: name)
-
+          raise ArgumentError, 'name is required' if name.to_s.empty?
           raise ArgumentError, 'parent is required' if parent.to_s.empty?
 
-          @parent = parent.to_s
+          super(name: name, parent: parent)
 
           freeze
         end
-
-        def hash
-          "#{super}#{parent}".hash
-        end
-
-        def ==(other)
-          super && other.parent == parent
-        end
-        alias eql? ==
       end
     end
   end

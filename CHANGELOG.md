@@ -1,3 +1,9 @@
+# 1.0.3 (August 27th, 2019)
+
+Additions:
+
+* Added 'parent' keyword for static constraints.  This makes it possible to have a static constraint apply to a parent and not just a child relationship.
+
 # 1.0.2 (August 26th, 2019)
 
 Fixes:

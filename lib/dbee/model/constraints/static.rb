@@ -12,14 +12,18 @@ require_relative 'base'
 module Dbee
   class Model
     class Constraints
-      # A static constraint is a equality constraint on a child column to a static value.
-      # It is usually used in conjunction with a ReferenceConstraint, further giving it more
-      # scoping.
+      # A static constraint is a equality constraint on a child and/or parent column to a
+      # static value. It is usually used in conjunction with a ReferenceConstraint,
+      # further giving it more scoping.
       class Static < Base
         attr_reader :value
 
-        def initialize(name:, value: nil)
-          super(name: name)
+        def initialize(name: '', parent: '', value: nil)
+          if name.to_s.empty? && parent.to_s.empty?
+            raise ArgumentError, "name (#{name}) and/or parent (#{parent}) required"
+          end
+
+          super(name: name, parent: parent)
 
           @value = value
 

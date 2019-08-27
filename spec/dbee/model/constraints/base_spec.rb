@@ -16,20 +16,31 @@ describe Dbee::Model::Constraints::Base do
   end
 
   context '#initialize' do
-    specify 'name is required' do
-      expect { described_class.new(name: '') }.to raise_error(ArgumentError)
-      expect { described_class.new(name: nil) }.to  raise_error(ArgumentError)
-      expect { described_class.new }.to             raise_error(ArgumentError)
+    it 'sets name correctly' do
+      expect(described_class.new.name).to               eq('')
+      expect(described_class.new(name: 123).name).to    eq('123')
+      expect(described_class.new(name: 'abc').name).to  eq('abc')
+    end
+
+    it 'sets parent correctly' do
+      expect(described_class.new.parent).to                 eq('')
+      expect(described_class.new(parent: 123).parent).to    eq('123')
+      expect(described_class.new(parent: 'abc').parent).to  eq('abc')
     end
   end
 
   context 'equality' do
-    let(:config) { { name: 'type' } }
+    let(:config) do
+      {
+        name: 'NAME!',
+        parent: 'PARENT!'
+      }
+    end
 
     subject { described_class.new(config) }
 
     specify '#hash produces same output as string hash of name' do
-      expect(subject.hash).to eq(config[:name].to_s.hash)
+      expect(subject.hash).to eq("#{config[:name]}#{config[:parent]}".hash)
     end
 
     specify '#== and #eql? compares attributes' do
