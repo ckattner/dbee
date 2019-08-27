@@ -21,7 +21,7 @@ module Dbee
 
     class ModelNotFoundError < StandardError; end
 
-    attr_reader :constraints, :name
+    attr_reader :constraints, :name, :table
 
     def initialize(name:, constraints: [], models: [], table: '')
       raise ArgumentError, 'name is required' if name.to_s.empty?
@@ -29,17 +29,13 @@ module Dbee
       @name           = name.to_s
       @constraints    = Constraints.array(constraints)
       @models_by_name = name_hash(Model.array(models))
-      @table          = table.to_s
+      @table          = table.to_s.empty? ? @name : table.to_s
 
       freeze
     end
 
     def name_hash(array)
       array.map { |a| [a.name, a] }.to_h
-    end
-
-    def table
-      @table.to_s.empty? ? name : @table
     end
 
     def models

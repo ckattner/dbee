@@ -7,8 +7,6 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'key_path'
-
 module Dbee
   class Query
     # Abstract representation of the ORDER BY part of a SQL statement.
@@ -48,6 +46,10 @@ module Dbee
         other.key_path == key_path && other.direction == direction
       end
       alias eql? ==
+
+      def <=>(other)
+        "#{key_path}#{direction}" <=> "#{other.key_path}#{other.direction}"
+      end
     end
   end
 end

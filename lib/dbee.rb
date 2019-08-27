@@ -11,6 +11,8 @@ require 'acts_as_hashable'
 require 'forwardable'
 
 require_relative 'dbee/base'
+require_relative 'dbee/key_chain'
+require_relative 'dbee/key_path'
 require_relative 'dbee/model'
 require_relative 'dbee/query'
 require_relative 'dbee/providers'
@@ -19,8 +21,13 @@ require_relative 'dbee/providers'
 module Dbee
   class << self
     def sql(model, query, provider)
-      model = model.is_a?(Hash) || model.is_a?(Model) ? Model.make(model) : model.to_model
       query = Query.make(query)
+      model =
+        if model.is_a?(Hash) || model.is_a?(Model)
+          Model.make(model)
+        else
+          model.to_model(query.key_chain)
+        end
 
       provider.sql(model, query)
     end

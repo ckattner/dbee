@@ -14,47 +14,58 @@ describe Dbee do
   describe '#sql' do
     let(:provider) { Dbee::Providers::NullProvider.new }
 
-    let(:query) { { fields: [{ key_path: :a }] } }
+    let(:model_hash) do
+      {
+        name: 'something'
+      }
+    end
+
+    let(:model) { Dbee::Model.make(model_hash) }
+
+    let(:query_hash) do
+      {
+        fields: [
+          { key_path: :a }
+        ]
+      }
+    end
+
+    let(:query) { Dbee::Query.make(query_hash) }
 
     it 'accepts a hash as a model and passes a Model instance to provider#sql' do
-      model = { name: 'something' }
+      expect(provider).to receive(:sql).with(model, query)
 
-      expect(provider).to receive(:sql).with(Dbee::Model.make(model), Dbee::Query.make(query))
-
-      described_class.sql(model, query, provider)
+      described_class.sql(model_hash, query, provider)
     end
 
     it 'accepts a Dbee::Model instance as a model and passes a Model instance to provider#sql' do
-      model = Dbee::Model.make(name: 'something')
-
-      expect(provider).to receive(:sql).with(Dbee::Model.make(model), Dbee::Query.make(query))
+      expect(provider).to receive(:sql).with(model, query)
 
       described_class.sql(model, query, provider)
     end
 
     it 'accepts a Dbee::Base constant as a model and passes a Model instance to provider#sql' do
-      model = Models::Theaters
+      model_constant = Models::Theaters
 
-      expect(provider).to receive(:sql).with(model.to_model, Dbee::Query.make(query))
+      expect(provider).to receive(:sql).with(model_constant.to_model(query.key_chain), query)
 
-      described_class.sql(model, query, provider)
+      described_class.sql(model_constant, query, provider)
     end
 
     it 'accepts a Dbee::Query instance as a query and passes a Query instance to provider#sql' do
-      model = Models::Theaters
-      query = Dbee::Query.make(query)
+      model = Models::Theaters.to_model(query.key_chain)
 
-      expect(provider).to receive(:sql).with(model.to_model, Dbee::Query.make(query))
+      expect(provider).to receive(:sql).with(model, query)
 
       described_class.sql(model, query, provider)
     end
 
     it 'accepts a hash as a query and passes a Query instance to provider#sql' do
-      model = Models::Theaters
+      model = Models::Theaters.to_model(query.key_chain)
 
-      expect(provider).to receive(:sql).with(model.to_model, Dbee::Query.make(query))
+      expect(provider).to receive(:sql).with(model, query)
 
-      described_class.sql(model, query, provider)
+      described_class.sql(model, query_hash, provider)
     end
   end
 end

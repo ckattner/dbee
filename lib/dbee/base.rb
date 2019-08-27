@@ -24,11 +24,23 @@ module Dbee
         self
       end
 
-      def to_model(name = nil, constraints = [], from = nil)
-        name  = derive_name(name)
-        key   = [name, constraints, from]
+      # This method is cycle-resistant due to the fact that it is a requirement to send in a
+      # key_chain.  That means each model produced using to_model is specific to a set of desired
+      # fields.  Basically, you cannot derive a Model from a Base subclass without the context
+      # of a Query.  This is not true for configuration-first Model definitions because, in that
+      # case, cycles do not exist since the nature of the configuration is flat.
+      def to_model(key_chain, name = nil, constraints = [], path_parts = [])
+        derived_name  = derive_name(name)
+        key           = [key_chain, derived_name, constraints, path_parts]
 
-        to_models[key] ||= Model.make(model_config(name, constraints, from))
+        to_models[key] ||= Model.make(
+          model_config(
+            key_chain,
+            derived_name,
+            constraints,
+            path_parts + [name]
+          )
+        )
       end
 
       def table_name
@@ -63,10 +75,10 @@ module Dbee
         subclasses.reverse
       end
 
-      def model_config(name, constraints, from)
+      def model_config(key_chain, name, constraints, path_parts)
         {
           constraints: constraints,
-          models: associations(from),
+          models: associations(key_chain, path_parts),
           name: name,
           table: derive_table
         }
@@ -82,15 +94,15 @@ module Dbee
         inherited_table.empty? ? inflected_name : inherited_table
       end
 
-      def associations(from)
+      def associations(key_chain, path_parts)
         inherited_associations_by_name.values
-                                      .reject { |c| c[:name].to_s == from.to_s }
+                                      .select { |c| key_chain.ancestor_path?(path_parts, c[:name]) }
                                       .each_with_object([]) do |config, memo|
           model_constant          = constantize(config[:model])
           associated_constraints  = config[:constraints]
           name                    = config[:name]
 
-          memo << model_constant.to_model(name, associated_constraints, name)
+          memo << model_constant.to_model(key_chain, name, associated_constraints, path_parts)
         end
       end
 

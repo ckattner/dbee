@@ -160,3 +160,29 @@ Readme:
             - type: static
               name: phone_number_type
               value: fax
+Cycle Example:
+  name: a
+  models:
+    - name: b1
+      table: b
+      models:
+        - name: c
+          models:
+            - name: a
+        - name: d
+          models:
+            - name: a
+    - name: b2
+      table: b
+      models:
+        - name: c
+          models:
+            - name: a
+        - name: d
+          models:
+            - name: a
+              models:
+                - name: b1
+                  table: b
+                  models:
+                    - name: c

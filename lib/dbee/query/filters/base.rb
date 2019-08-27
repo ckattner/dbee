@@ -33,6 +33,10 @@ module Dbee
           other.key_path == key_path && other.value == value
         end
         alias eql? ==
+
+        def <=>(other)
+          "#{key_path}#{value}" <=> "#{other.key_path}#{other.value}"
+        end
       end
     end
   end

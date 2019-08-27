@@ -103,11 +103,20 @@ describe Dbee::Model do
 
   context 'README examples' do
     specify 'code-first and configuration-first models are equal' do
-      config = yaml_fixture('models.yaml')['Readme']
+      config        = yaml_fixture('models.yaml')['Readme']
+      config_model  = described_class.make(config)
 
-      config_model = described_class.make(config)
+      key_chain = Dbee::KeyChain.new(%w[
+                                       patients.a
+                                       patients.notes.b
+                                       patients.work_phone_number.c
+                                       patients.cell_phone_number.d
+                                       patients.fax_phone_number.e
+                                     ])
 
-      expect(config_model).to eq(ReadmeDataModels::Practices.to_model)
+      code_model = ReadmeDataModels::Practices.to_model(key_chain)
+
+      expect(config_model).to eq(code_model)
     end
   end
 end

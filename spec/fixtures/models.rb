@@ -117,39 +117,25 @@ module ReadmeDataModels
 end
 
 module Cycles
-  class A < Dbee::Base
-    association :b, model: 'Cycles::B'
-
-    association :c, model: 'Cycles::C'
-
-    association :d, model: 'Cycles::D'
-
-    association :g, model: 'Cycles::G'
+  class BaseA < Dbee::Base
+    association :b1, model: 'Cycles::B'
   end
 
-  class B < Dbee::Base
-    association :b1, model: 'Cycles::B'
-
+  class A < BaseA
     association :b2, model: 'Cycles::B'
   end
 
+  class B < Dbee::Base
+    association :c, model: 'Cycles::C'
+
+    association :d, model: 'Cycles::D'
+  end
+
   class C < Dbee::Base
-    association :e, model: 'Cycles::E'
-  end
-
-  class D < Dbee::Base
-    association :f, model: 'Cycles::F'
-  end
-
-  class E < Dbee::Base
-    association :g, model: 'Cycles::G'
-  end
-
-  class F < Dbee::Base
     association :a, model: 'Cycles::A'
   end
 
-  class G < Dbee::Base
-    association :g, model: 'Cycles::G'
+  class D < Dbee::Base
+    association :a, model: 'Cycles::A'
   end
 end

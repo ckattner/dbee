@@ -9,7 +9,7 @@
 
 require 'spec_helper'
 
-describe Dbee::Query::KeyPath do
+describe Dbee::KeyPath do
   let(:key_path_string) { 'contacts.demographics.first' }
 
   subject { described_class.get(key_path_string) }
@@ -31,5 +31,17 @@ describe Dbee::Query::KeyPath do
   specify 'equality compares to value' do
     expect(subject).to eq(key_path_string)
     expect(subject).to eql(key_path_string)
+  end
+
+  describe '#ancestor_paths' do
+    let(:key_path_string) { 'a.b.c.d.e' }
+
+    subject { described_class.get(key_path_string) }
+
+    it 'should include all left-inclusive paths' do
+      expected = %w[a a.b a.b.c a.b.c.d]
+
+      expect(subject.ancestor_paths).to eq(expected)
+    end
   end
 end

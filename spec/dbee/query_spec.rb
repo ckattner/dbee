@@ -45,13 +45,16 @@ describe Dbee::Query do
     end
   end
 
-  describe '#key_paths' do
-    it 'should get filter, sorter, and field key_paths' do
-      expected = (config[:fields].map { |f| f[:key_path].to_s } +
+  describe '#key_chain' do
+    it 'should include filter, sorter, and field key_paths' do
+      key_paths =
+        config[:fields].map { |f| f[:key_path].to_s } +
         config[:filters].map { |f| f[:key_path].to_s } +
-        config[:sorters].map { |s| s[:key_path].to_s }).uniq.sort
+        config[:sorters].map { |s| s[:key_path].to_s }
 
-      expect(subject.key_paths).to eq(expected)
+      expected_key_chain = Dbee::KeyChain.new(key_paths)
+
+      expect(subject.key_chain).to eq(expected_key_chain)
     end
   end
 

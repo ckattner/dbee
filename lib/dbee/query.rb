@@ -40,15 +40,21 @@ module Dbee
     end
 
     def ==(other)
-      other.fields == fields &&
-        other.filters == filters &&
+      other.fields.sort == fields.sort &&
+        other.filters.sort == filters.sort &&
         other.limit == limit &&
-        other.sorters == sorters
+        other.sorters.sort == sorters.sort
     end
     alias eql? ==
 
+    def key_chain
+      KeyChain.new(key_paths)
+    end
+
+    private
+
     def key_paths
-      (fields.map(&:key_path) + filters.map(&:key_path) + sorters.map(&:key_path)).uniq.sort
+      (fields.map(&:key_path) + filters.map(&:key_path) + sorters.map(&:key_path))
     end
   end
 end

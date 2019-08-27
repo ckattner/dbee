@@ -7,8 +7,6 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'key_path'
-
 module Dbee
   class Query
     # This class is an abstraction of the SELECT part of a SQL statement.
@@ -36,6 +34,10 @@ module Dbee
         other.key_path == key_path && other.display == display
       end
       alias eql? ==
+
+      def <=>(other)
+        "#{key_path}#{display}" <=> "#{other.key_path}#{other.display}"
+      end
     end
   end
 end
