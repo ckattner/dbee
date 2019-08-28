@@ -63,20 +63,22 @@ describe Dbee::Query do
         ]
       }
 
-      expected_filters = Dbee::Query::Filters.array([
-                                                      { key_path: 'a', value: 'something' },
-                                                      { key_path: 'b', value: 123 },
-                                                      { key_path: 'b', value: '123' },
-                                                      { key_path: 'c', value: nil },
-                                                      { key_path: 'c', value: '' },
-                                                      {
-                                                        key_path: 'd',
-                                                        value: 'r',
-                                                        type: :greater_than_or_equal_to
-                                                      },
-                                                      { key_path: 'd', value: 'r' },
-                                                      { key_path: 'e', value: [1, 2, 3] }
-                                                    ])
+      expected_filters = Dbee::Query::Filters.array(
+        [
+          { key_path: 'a', value: 'something' },
+          { key_path: 'b', value: 123 },
+          { key_path: 'b', value: '123' },
+          { key_path: 'c', value: nil },
+          { key_path: 'c', value: '' },
+          {
+            key_path: 'd',
+            value: 'r',
+            type: :greater_than_or_equal_to
+          },
+          { key_path: 'd', value: 'r' },
+          { key_path: 'e', value: [1, 2, 3] }
+        ]
+      )
 
       expect(described_class.make(query_hash).filters).to eq(expected_filters)
     end
@@ -97,12 +99,12 @@ describe Dbee::Query do
         ]
       }
 
-      expected_sorters = Dbee::Query::Sorter.array([
-                                                     { key_path: 'a' },
-                                                     { key_path: 'b' },
-                                                     { key_path: 'c', direction: :descending },
-                                                     { key_path: '1' }
-                                                   ])
+      expected_sorters = Dbee::Query::Sorters.array([
+                                                      { key_path: 'a' },
+                                                      { key_path: 'b' },
+                                                      { key_path: 'c', direction: :descending },
+                                                      { key_path: '1' }
+                                                    ])
 
       expect(described_class.make(query_hash).sorters).to eq(expected_sorters)
     end

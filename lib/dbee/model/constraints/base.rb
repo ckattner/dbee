@@ -22,11 +22,11 @@ module Dbee
         end
 
         def <=>(other)
-          "#{name}#{parent}" <=> "#{other.name}#{other.parent}"
+          "#{self.class.name}#{name}#{parent}" <=> "#{other.class.name}#{other.name}#{other.parent}"
         end
 
         def hash
-          "#{name}#{parent}".hash
+          "#{self.class.name}#{name}#{parent}".hash
         end
 
         def ==(other)

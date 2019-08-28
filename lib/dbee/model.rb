@@ -13,6 +13,7 @@ module Dbee
   # In DB terms, a Model is usually a table, but it does not have to be.  You can also re-model
   # your DB schema using Dbee::Models.
   class Model
+    extend Forwardable
     acts_as_hashable
 
     JOIN_CHAR = '.'
@@ -22,6 +23,12 @@ module Dbee
     class ModelNotFoundError < StandardError; end
 
     attr_reader :constraints, :name, :table
+
+    def_delegator :models_by_name, :values, :models
+
+    def_delegator :models, :sort, :sorted_models
+
+    def_delegator :constraints, :sort, :sorted_constraints
 
     def initialize(name:, constraints: [], models: [], table: '')
       raise ArgumentError, 'name is required' if name.to_s.empty?
@@ -36,18 +43,6 @@ module Dbee
 
     def name_hash(array)
       array.map { |a| [a.name, a] }.to_h
-    end
-
-    def models
-      models_by_name.values
-    end
-
-    def sorted_models
-      models.sort
-    end
-
-    def sorted_constraints
-      constraints.sort
     end
 
     def ancestors(parts = [], alias_chain = [], found = {})
@@ -74,8 +69,8 @@ module Dbee
       other.instance_of?(self.class) &&
         other.name == name &&
         other.table == table &&
-        other.sorted_models == sorted_models &&
-        other.sorted_constraints == sorted_constraints
+        other.sorted_constraints == sorted_constraints &&
+        other.sorted_models == sorted_models
     end
     alias eql? ==
 

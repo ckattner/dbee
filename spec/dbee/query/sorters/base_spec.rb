@@ -9,7 +9,7 @@
 
 require 'spec_helper'
 
-describe Dbee::Query::Sorter do
+describe Dbee::Query::Sorters::Base do
   it 'should act as hashable' do
     expect(described_class).to respond_to(:make)
     expect(described_class).to respond_to(:array)
@@ -24,12 +24,12 @@ describe Dbee::Query::Sorter do
   end
 
   context 'equality' do
-    let(:config) { { key_path: 'a.b.c', direction: :descending } }
+    let(:config) { { key_path: 'a.b.c' } }
 
     subject { described_class.new(config) }
 
-    specify '#hash produces same output as concatenated string hash of key_path and direction' do
-      expect(subject.hash).to eq("#{config[:key_path]}#{config[:direction]}".hash)
+    specify '#hash produces same output as concatenated string hash of class name and key_path' do
+      expect(subject.hash).to eq("#{described_class.name}#{config[:key_path]}".hash)
     end
 
     specify '#== and #eql? compare attributes' do
@@ -42,36 +42,6 @@ describe Dbee::Query::Sorter do
     it 'returns false unless comparing same object types' do
       expect(subject).not_to eq('a.b.c')
       expect(subject).not_to eq(nil)
-    end
-  end
-
-  describe 'direction helpers' do
-    context 'when direction is ascending' do
-      let(:config) { { key_path: 'a.b.c' } }
-
-      subject { described_class.new(config) }
-
-      it '#ascending? is true' do
-        expect(subject.ascending?).to be true
-      end
-
-      it '#descending? is false' do
-        expect(subject.descending?).to be false
-      end
-    end
-
-    context 'when direction is descending' do
-      let(:config) { { key_path: 'a.b.c', direction: :descending } }
-
-      subject { described_class.new(config) }
-
-      it '#ascending? is false' do
-        expect(subject.ascending?).to be false
-      end
-
-      it '#descending? is true' do
-        expect(subject.descending?).to be true
-      end
     end
   end
 end

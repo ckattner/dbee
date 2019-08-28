@@ -9,7 +9,7 @@
 
 require_relative 'query/field'
 require_relative 'query/filters'
-require_relative 'query/sorter'
+require_relative 'query/sorters'
 
 module Dbee
   # This class is an abstration of a simplified SQL expression.  In DB terms:
@@ -18,11 +18,18 @@ module Dbee
   # - limit is the TAKE
   # - filters are the WHERE
   class Query
+    extend Forwardable
     acts_as_hashable
 
     class NoFieldsError < StandardError; end
 
     attr_reader :fields, :filters, :limit, :sorters
+
+    def_delegator :fields, :sort, :sorted_fields
+
+    def_delegator :filters, :sort, :sorted_filters
+
+    def_delegator :sorters, :sort, :sorted_sorters
 
     def initialize(fields:, filters: [], limit: nil, sorters: [])
       @fields = Field.array(fields)
@@ -34,16 +41,17 @@ module Dbee
 
       @filters  = Filters.array(filters).uniq
       @limit    = limit.to_s.empty? ? nil : limit.to_i
-      @sorters  = Sorter.array(sorters).uniq
+      @sorters  = Sorters.array(sorters).uniq
 
       freeze
     end
 
     def ==(other)
-      other.fields.sort == fields.sort &&
-        other.filters.sort == filters.sort &&
-        other.limit == limit &&
-        other.sorters.sort == sorters.sort
+      other.instance_of?(self.class) &&
+        other.sorted_fields == sorted_fields &&
+        other.sorted_filters == sorted_filters &&
+        other.sorted_sorters == sorted_sorters &&
+        other.limit == limit
     end
     alias eql? ==
 

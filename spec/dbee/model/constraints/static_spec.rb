@@ -24,7 +24,10 @@ describe Dbee::Model::Constraints::Static do
     end
 
     specify '#hash produces same output as concatenated string hash of name and parent' do
-      expect(subject.hash).to eq("#{config[:name].hash}#{config[:value]}".hash)
+      parent_hash   = "#{described_class.name}#{config[:name]}#{config[:parent]}".hash
+      expected_hash = "#{parent_hash}#{config[:value]}".hash
+
+      expect(subject.hash).to eq(expected_hash)
     end
 
     specify '#== and #eql? compare attributes' do

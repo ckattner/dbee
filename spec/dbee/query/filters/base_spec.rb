@@ -28,8 +28,9 @@ describe Dbee::Query::Filters::Base do
 
     subject { described_class.new(config) }
 
-    specify '#hash produces same output as concatenated string hash of key_path and value' do
-      expect(subject.hash).to eq("#{config[:key_path]}#{config[:value]}".hash)
+    specify '#hash produces same output as string hash of class name, key_path, and value' do
+      expected_hash = "#{described_class.name}#{config[:key_path]}#{config[:value]}".hash
+      expect(subject.hash).to eq(expected_hash)
     end
 
     specify '#== and #eql? compare attributes' do
