@@ -31,7 +31,9 @@ module Dbee
       end
 
       def ==(other)
-        other.key_path == key_path && other.display == display
+        other.instance_of?(self.class) &&
+          other.key_path == key_path &&
+          other.display == display
       end
       alias eql? ==
 

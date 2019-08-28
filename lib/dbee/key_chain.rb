@@ -29,7 +29,7 @@ module Dbee
     end
 
     def ==(other)
-      key_path_set == other.key_path_set
+      other.instance_of?(self.class) && key_path_set == other.key_path_set
     end
     alias eql? ==
 

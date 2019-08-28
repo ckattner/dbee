@@ -32,9 +32,9 @@ module Dbee
       # have implications in downstream SQL generators.
       raise NoFieldsError if @fields.empty?
 
-      @filters  = Filters.array(filters)
+      @filters  = Filters.array(filters).uniq
       @limit    = limit.to_s.empty? ? nil : limit.to_i
-      @sorters  = Sorter.array(sorters)
+      @sorters  = Sorter.array(sorters).uniq
 
       freeze
     end

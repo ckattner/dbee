@@ -43,6 +43,69 @@ describe Dbee::Query do
     it 'should raise a NoFieldsError if no fields were passed in' do
       expect { described_class.new(fields: []) }.to raise_error(Dbee::Query::NoFieldsError)
     end
+
+    it 'should remove duplicate filters (keep first instance)' do
+      query_hash = {
+        fields: [
+          { key_path: 'a' }
+        ],
+        filters: [
+          { key_path: 'a', value: 'something' },
+          { key_path: 'b', value: 123 },
+          { key_path: 'b', value: '123' },
+          { key_path: 'c', value: nil },
+          { key_path: 'c', value: '' },
+          { key_path: 'd', value: 'r', type: :greater_than_or_equal_to },
+          { key_path: 'd', value: 'r' },
+          { key_path: 'e', value: [1, 2, 3] },
+          { key_path: 'a', value: 'something' },
+          { key_path: 'e', value: [1, 2, 3] }
+        ]
+      }
+
+      expected_filters = Dbee::Query::Filters.array([
+                                                      { key_path: 'a', value: 'something' },
+                                                      { key_path: 'b', value: 123 },
+                                                      { key_path: 'b', value: '123' },
+                                                      { key_path: 'c', value: nil },
+                                                      { key_path: 'c', value: '' },
+                                                      {
+                                                        key_path: 'd',
+                                                        value: 'r',
+                                                        type: :greater_than_or_equal_to
+                                                      },
+                                                      { key_path: 'd', value: 'r' },
+                                                      { key_path: 'e', value: [1, 2, 3] }
+                                                    ])
+
+      expect(described_class.make(query_hash).filters).to eq(expected_filters)
+    end
+
+    it 'should remove duplicate sorters (keep first instance)' do
+      query_hash = {
+        fields: [
+          { key_path: 'a' }
+        ],
+        sorters: [
+          { key_path: 'a' },
+          { key_path: 'b' },
+          { key_path: 'c', direction: :descending },
+          { key_path: '1' },
+          { key_path: :a },
+          { key_path: 1 },
+          { key_path: 'c', direction: :descending }
+        ]
+      }
+
+      expected_sorters = Dbee::Query::Sorter.array([
+                                                     { key_path: 'a' },
+                                                     { key_path: 'b' },
+                                                     { key_path: 'c', direction: :descending },
+                                                     { key_path: '1' }
+                                                   ])
+
+      expect(described_class.make(query_hash).sorters).to eq(expected_sorters)
+    end
   end
 
   describe '#key_chain' do

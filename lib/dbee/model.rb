@@ -42,6 +42,14 @@ module Dbee
       models_by_name.values
     end
 
+    def sorted_models
+      models.sort
+    end
+
+    def sorted_constraints
+      constraints.sort
+    end
+
     def ancestors(parts = [], alias_chain = [], found = {})
       return found if Array(parts).empty?
 
@@ -63,10 +71,11 @@ module Dbee
     end
 
     def ==(other)
-      other.name == name &&
+      other.instance_of?(self.class) &&
+        other.name == name &&
         other.table == table &&
-        other.models.sort == models.sort &&
-        other.constraints.sort == constraints.sort
+        other.sorted_models == sorted_models &&
+        other.sorted_constraints == sorted_constraints
     end
     alias eql? ==
 

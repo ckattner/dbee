@@ -33,6 +33,11 @@ describe Dbee::KeyPath do
     expect(subject).to eql(key_path_string)
   end
 
+  specify 'equality compares to_s of both objects' do
+    expect(subject).to eq(key_path_string)
+    expect(subject).to eql(:'contacts.demographics.first')
+  end
+
   describe '#ancestor_paths' do
     let(:key_path_string) { 'a.b.c.d.e' }
 

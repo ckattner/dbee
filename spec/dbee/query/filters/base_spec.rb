@@ -38,5 +38,10 @@ describe Dbee::Query::Filters::Base do
       expect(subject).to eq(object2)
       expect(subject).to eql(object2)
     end
+
+    it 'returns false unless comparing same object types' do
+      expect(subject).not_to eq('a.b.c')
+      expect(subject).not_to eq(nil)
+    end
   end
 end

@@ -30,7 +30,9 @@ module Dbee
         end
 
         def ==(other)
-          other.name == name && other.parent == parent
+          other.instance_of?(self.class) &&
+            other.name == name &&
+            other.parent == parent
         end
         alias eql? ==
       end

@@ -89,15 +89,24 @@ describe Dbee::Model do
 
       expect(plan).to eq(expected_plan)
     end
+  end
+
+  describe 'equality' do
+    let(:config) { yaml_fixture('models.yaml')['Theaters, Members, and Movies'] }
+
+    subject { described_class.make(config) }
 
     specify 'equality compares attributes' do
-      config = yaml_fixture('models.yaml')['Theaters, Members, and Movies']
-
       model1 = described_class.make(config)
       model2 = described_class.make(config)
 
       expect(model1).to eq(model2)
       expect(model1).to eql(model2)
+    end
+
+    it 'returns false unless comparing same object types' do
+      expect(subject).not_to eq(config)
+      expect(subject).not_to eq(nil)
     end
   end
 

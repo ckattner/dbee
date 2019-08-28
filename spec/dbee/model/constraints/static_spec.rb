@@ -33,5 +33,10 @@ describe Dbee::Model::Constraints::Static do
       expect(subject).to eq(object2)
       expect(subject).to eql(object2)
     end
+
+    it 'returns false unless comparing same object types' do
+      expect(subject).not_to eq(config)
+      expect(subject).not_to eq(nil)
+    end
   end
 end

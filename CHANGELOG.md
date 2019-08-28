@@ -1,3 +1,13 @@
+# 1.0.4 (August 28th, 2019)
+
+Additions:
+
+* Added better equality methods for Ruby objects (class type check first.)
+
+Changes:
+
+* Duplicate filters and sorters will be ignored in a Query.
+
 # 1.0.3 (August 27th, 2019)
 
 Additions:

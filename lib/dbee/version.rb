@@ -8,5 +8,5 @@
 #
 
 module Dbee
-  VERSION = '1.0.3'
+  VERSION = '1.1.0'
 end
