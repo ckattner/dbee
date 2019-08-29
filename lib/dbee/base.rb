@@ -12,6 +12,10 @@ module Dbee
   # Model declaration.
   class Base
     class << self
+      def partitioner(name, value)
+        partitioners << { name: name, value: value }
+      end
+
       def table(name)
         @table_name = name.to_s
 
@@ -51,6 +55,10 @@ module Dbee
         @associations_by_name ||= {}
       end
 
+      def partitioners
+        @partitioners ||= []
+      end
+
       def table_name?
         !table_name.empty?
       end
@@ -62,6 +70,12 @@ module Dbee
       def inherited_associations_by_name
         reversed_subclasses.each_with_object({}) do |subclass, memo|
           memo.merge!(subclass.associations_by_name)
+        end
+      end
+
+      def inherited_partitioners
+        reversed_subclasses.inject([]) do |memo, subclass|
+          memo + subclass.partitioners
         end
       end
 
@@ -78,6 +92,7 @@ module Dbee
       def model_config(key_chain, name, constraints, path_parts)
         {
           constraints: constraints,
+          partitioners: inherited_partitioners,
           models: associations(key_chain, path_parts),
           name: name,
           table: derive_table

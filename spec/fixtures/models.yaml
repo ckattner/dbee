@@ -186,3 +186,26 @@ Cycle Example:
                   table: b
                   models:
                     - name: c
+
+Partitioner Example 1:
+  name: dogs
+  table: animals
+  partitioners:
+    - name: type
+      value: Dog
+    - name: deleted
+      value: false
+
+Partitioner Example 2:
+  name: owners
+  models:
+    - name: dogs
+      table: animals
+      constraints:
+        - name: owner_id
+          parent: id
+      partitioners:
+        - name: type
+          value: Dog
+        - name: deleted
+          value: false

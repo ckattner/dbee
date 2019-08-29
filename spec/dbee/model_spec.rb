@@ -66,10 +66,10 @@ describe Dbee::Model do
       members = subject.models.first
 
       expected_plan = {
-        'members' => members
+        %w[members] => members
       }
 
-      plan = subject.ancestors(%w[members])
+      plan = subject.ancestors!(%w[members])
 
       expect(plan).to eq(expected_plan)
     end
@@ -80,12 +80,12 @@ describe Dbee::Model do
       phone_numbers = demos.models.first
 
       expected_plan = {
-        'members' => members,
-        'members.demos' => demos,
-        'members.demos.phone_numbers' => phone_numbers
+        %w[members] => members,
+        %w[members demos] => demos,
+        %w[members demos phone_numbers] => phone_numbers
       }
 
-      plan = subject.ancestors(%w[members demos phone_numbers])
+      plan = subject.ancestors!(%w[members demos phone_numbers])
 
       expect(plan).to eq(expected_plan)
     end

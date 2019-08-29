@@ -21,7 +21,7 @@ require_relative 'filters/starts_with'
 module Dbee
   class Query
     # Top-level class that allows for the making of filters.  For example, you can call this as:
-    # - Filters.make(type: :contains, value: 'something')
+    # - Filters.make(key_path: :field, type: :contains, value: 'something')
     class Filters
       acts_as_hashable_factory
 

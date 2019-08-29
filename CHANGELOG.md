@@ -1,3 +1,14 @@
+# 1.2.0 (August 29th, 2019)
+
+Additions:
+
+* Added partitioners to a model specification.  A Partitioner is essentially a way of explicitly specifying that a data model must meet a specific equality for a column.
+
+Changes:
+
+* Model#ancestors renamed to Model#ancestors!
+* Model#ancestor now returns a hash where the key is an array of strings and not just a pre-concatenated string.
+
 # 1.1.0 (August 28th, 2019)
 
 Additions:

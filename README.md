@@ -175,6 +175,44 @@ models:
 
 It is up to you to determine which modeling technique to use as both are equivalent.  Technically speaking, the code-first DSL is nothing more than syntactic sugar on top of Dbee::Model.
 
+#### Table Partitioning
+
+You can leverage the model partitioners for hard-coding partitioning by column=value.  The initial use-case for this was to mirror how ActiveRecord deals with (Single Table Inheritance)[https://api.rubyonrails.org/v6.0.0/classes/ActiveRecord/Base.html#class-ActiveRecord::Base-label-Single+table+inheritance].  Here is a basic example of how to partition an `animals` table for different subclasses:
+
+##### Code-first:
+
+````ruby
+class Dogs < Dbee::Base
+  table 'animals'
+
+  partitioner :type, 'Dog'
+end
+
+class Cats < Dbee::Base
+  table 'animals'
+
+  partitioner :type, 'Cat'
+end
+````
+
+##### Configuration-first:
+
+````yaml
+Dogs:
+  name: dogs
+  table: animals
+  partitioners:
+    - name: type
+      value: Dog
+
+Cats:
+  name: cats
+  table: animals
+  partitioners:
+    - name: type
+      value: Cat
+````
+
 ### The Query API
 
 The Query API (Dbee::Query) is a simplified and abstract way to model an SQL query.  A Query has the following components:

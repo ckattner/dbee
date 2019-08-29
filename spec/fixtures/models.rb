@@ -139,3 +139,20 @@ module Cycles
     association :a, model: 'Cycles::A'
   end
 end
+
+# Examples of Rails Single Table Inheritance.
+module PartitionerExamples
+  class Owners < Dbee::Base
+    association :dogs, model: 'PartitionerExamples::Dogs', constraints: {
+      name: :owner_id, parent: :id
+    }
+  end
+
+  class Dogs < Dbee::Base
+    table 'animals'
+
+    partitioner :type, 'Dog'
+
+    partitioner :deleted, false
+  end
+end

@@ -72,4 +72,32 @@ describe Dbee::Base do
       expect(Models::E.inherited_table_name).to eq('table_set_to_e')
     end
   end
+
+  describe 'partitioners' do
+    it 'honors partitioners on a root model' do
+      model_name      = 'Partitioner Example 1'
+      expected_config = yaml_fixture('models.yaml')[model_name]
+      expected_model = Dbee::Model.make(expected_config)
+
+      key_paths = %w[id]
+      key_chain = Dbee::KeyChain.new(key_paths)
+
+      actual_model = PartitionerExamples::Dogs.to_model(key_chain)
+
+      expect(actual_model).to eq(expected_model)
+    end
+
+    it 'honors partitioners on a child model' do
+      model_name      = 'Partitioner Example 2'
+      expected_config = yaml_fixture('models.yaml')[model_name]
+      expected_model = Dbee::Model.make(expected_config)
+
+      key_paths = %w[id dogs.id]
+      key_chain = Dbee::KeyChain.new(key_paths)
+
+      actual_model = PartitionerExamples::Owners.to_model(key_chain)
+
+      expect(actual_model).to eq(expected_model)
+    end
+  end
 end
