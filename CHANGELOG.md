@@ -1,3 +1,9 @@
+# 1.2.1 (September 1st, 2019)
+
+Fixes:
+
+* Dbee::Base table name should default to the most-parent table name (if none are explicitly defined.)  Overriding still takes most child sub-class precedence.
+
 # 1.2.0 (August 29th, 2019)
 
 Additions:

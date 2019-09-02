@@ -23,6 +23,8 @@ module Models
   end
 
   class MembersBase < Dbee::Base
+    table 'members'
+
     association :demos, model: Demographics,
                         constraints: { type: :reference, name: :member_id, parent: :id }
 
@@ -55,6 +57,8 @@ module Models
   end
 
   class Theaters < TheatersBase
+    table 'theaters'
+
     association :parent_theater, model: self, constraints: [
       { type: :reference, name: :id, parent: :parent_theater_id }
     ]
@@ -148,9 +152,10 @@ module PartitionerExamples
     }
   end
 
-  class Dogs < Dbee::Base
-    table 'animals'
+  class Animals < Dbee::Base
+  end
 
+  class Dogs < Animals
     partitioner :type, 'Dog'
 
     partitioner :deleted, false

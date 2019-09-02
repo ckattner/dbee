@@ -162,6 +162,7 @@ Readme:
               value: fax
 Cycle Example:
   name: a
+  table: base_a
   models:
     - name: b1
       table: b
@@ -169,18 +170,22 @@ Cycle Example:
         - name: c
           models:
             - name: a
+              table: base_a
         - name: d
           models:
             - name: a
+              table: base_a
     - name: b2
       table: b
       models:
         - name: c
           models:
             - name: a
+              table: base_a
         - name: d
           models:
             - name: a
+              table: base_a
               models:
                 - name: b1
                   table: b

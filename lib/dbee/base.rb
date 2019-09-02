@@ -7,25 +7,29 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+require_relative 'dsl/inflectable'
+require_relative 'dsl/reflectable'
+
 module Dbee
   # Instead of using the configuration-first approach, you could use this super class for
   # Model declaration.
   class Base
+    extend Dsl::Inflectable
+    extend Dsl::Reflectable
+
+    BASE_CLASS_CONSTANT = Dbee::Base
+
     class << self
       def partitioner(name, value)
         partitioners << { name: name, value: value }
       end
 
       def table(name)
-        @table_name = name.to_s
-
-        self
+        tap { @table_name = name.to_s }
       end
 
       def association(name, opts = {})
-        associations_by_name[name.to_s] = opts.merge(name: name)
-
-        self
+        tap { associations_by_name[name.to_s] = opts.merge(name: name) }
       end
 
       # This method is cycle-resistant due to the fact that it is a requirement to send in a
@@ -34,7 +38,7 @@ module Dbee
       # of a Query.  This is not true for configuration-first Model definitions because, in that
       # case, cycles do not exist since the nature of the configuration is flat.
       def to_model(key_chain, name = nil, constraints = [], path_parts = [])
-        derived_name  = derive_name(name)
+        derived_name  = name.to_s.empty? ? tableize(self.name) : name.to_s
         key           = [key_chain, derived_name, constraints, path_parts]
 
         to_models[key] ||= Model.make(
@@ -64,78 +68,52 @@ module Dbee
       end
 
       def inherited_table_name
-        subclasses.find(&:table_name?)&.table_name || ''
+        subclasses(BASE_CLASS_CONSTANT).find(&:table_name?)&.table_name ||
+          tableize(reversed_subclasses(BASE_CLASS_CONSTANT).first.name)
       end
 
-      def inherited_associations_by_name
-        reversed_subclasses.each_with_object({}) do |subclass, memo|
+      def inherited_associations
+        reversed_subclasses(BASE_CLASS_CONSTANT).each_with_object({}) do |subclass, memo|
           memo.merge!(subclass.associations_by_name)
-        end
+        end.values
       end
 
       def inherited_partitioners
-        reversed_subclasses.inject([]) do |memo, subclass|
+        reversed_subclasses(BASE_CLASS_CONSTANT).inject([]) do |memo, subclass|
           memo + subclass.partitioners
         end
       end
 
       private
 
-      def subclasses
-        ancestors.select { |a| a < Dbee::Base }
-      end
-
-      def reversed_subclasses
-        subclasses.reverse
-      end
-
       def model_config(key_chain, name, constraints, path_parts)
         {
           constraints: constraints,
-          partitioners: inherited_partitioners,
           models: associations(key_chain, path_parts),
           name: name,
-          table: derive_table
+          partitioners: inherited_partitioners,
+          table: inherited_table_name
         }
       end
 
-      def derive_name(name)
-        name.to_s.empty? ? inflected_name : name.to_s
-      end
-
-      def derive_table
-        inherited_table = inherited_table_name
-
-        inherited_table.empty? ? inflected_name : inherited_table
-      end
-
       def associations(key_chain, path_parts)
-        inherited_associations_by_name.values
-                                      .select { |c| key_chain.ancestor_path?(path_parts, c[:name]) }
-                                      .each_with_object([]) do |config, memo|
+        inherited_associations.select { |c| key_chain.ancestor_path?(path_parts, c[:name]) }
+                              .each_with_object([]) do |config, memo|
           model_constant          = constantize(config[:model])
           associated_constraints  = config[:constraints]
           name                    = config[:name]
 
-          memo << model_constant.to_model(key_chain, name, associated_constraints, path_parts)
+          memo << model_constant.to_model(
+            key_chain,
+            name,
+            associated_constraints,
+            path_parts
+          )
         end
       end
 
       def to_models
         @to_models ||= {}
-      end
-
-      def inflected_name
-        name.split('::')
-            .last
-            .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-            .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-            .tr('-', '_')
-            .downcase
-      end
-
-      def constantize(value)
-        value.is_a?(String) || value.is_a?(Symbol) ? Object.const_get(value) : value
       end
     end
   end
