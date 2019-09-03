@@ -25,27 +25,26 @@ module Dbee
       end
 
       def parent_association(on_class_name, name, opts = {})
-        primary_key = opts[:primary_key] || inflector.foreign_key(name)
-        foreign_key = opts[:foreign_key] || :id
+        reference_constraint = {
+          name: opts[:foreign_key] || :id,
+          parent: opts[:primary_key] || inflector.foreign_key(name)
+        }
 
-        association(on_class_name, name, opts, primary_key, foreign_key)
+        association(on_class_name, name, opts, reference_constraint)
       end
 
       def child_association(on_class_name, name, opts = {})
-        primary_key = opts[:primary_key] || :id
-        foreign_key = opts[:foreign_key] || inflector.foreign_key(on_class_name)
+        reference_constraint = {
+          name: opts[:foreign_key] || inflector.foreign_key(on_class_name),
+          parent: opts[:primary_key] || :id
+        }
 
-        association(on_class_name, name, opts, primary_key, foreign_key)
+        association(on_class_name, name, opts, reference_constraint)
       end
 
       private
 
-      def association(on_class_name, name, opts, primary_key, foreign_key)
-        reference_constraint = {
-          name: foreign_key,
-          parent: primary_key
-        }
-
+      def association(on_class_name, name, opts, reference_constraint)
         association_opts = {
           model: opts[:model],
           constraints: [reference_constraint] + make_constraints(opts)

@@ -121,6 +121,18 @@ The two DSL methods: parent/child are very similar to ActiveRecord's belongs_to/
 * **foreign_key**: name of the key on the child table.  If omitted for child then it will resolve as singular, underscored, de-modulized class name suffixed with '\_id'.  If omitted for parent it will resolve to 'id'.
 * **primary_key**: name of the key on the parent table.  If omitted for child then it will resolve as 'id'.  If omitted for parent then it will resolve as the singular, underscored, de-modulized name of the relationship suffixed with '\_id'
 
+##### Customizing Inflection Rules
+
+Inflection is provided via the (Dry::Inflector gem)[https://github.com/dry-rb/dry-inflector].  There are options to add custom grammar rules which you can then pass into Dbee.  For example:
+
+````ruby
+Dbee.inflector = Dry::Inflector.new do |inflections|
+  inflections.plural      'virus',   'viruses' # specify a rule for #pluralize
+  inflections.singular    'thieves', 'thief'   # specify a rule for #singularize
+  inflections.uncountable 'dry-inflector'      # add an exception for an uncountable word
+end
+````
+
 #### Code-First Data Modeling (Without Inflection)
 
 You can use the raw `association` method you wish to fully control the entire referencing configuration.
