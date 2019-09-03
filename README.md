@@ -80,58 +80,104 @@ There are two ways to model this schema using Dbee:
 1. code-first
 2. configuration-first
 
-#### Code-First Data Modeling
+#### Code-First Data Modeling (With Inflection)
 
 Code-first data modeling involves creating sub-classes of Dbee::Base that describes the tables and associations.  We could model the above example as:
 
 ````ruby
 module ReadmeDataModels
-  class PhoneNumbers < Dbee::Base
+  class PhoneNumber < Dbee::Base
     table :phones
+
+    parent :patient
   end
 
-  class Notes < Dbee::Base
+  class Note < Dbee::Base
+    parent :patient
   end
 
-  class Patients < Dbee::Base
-    association :notes, model: Notes, constraints: {
+  class Patient < Dbee::Base
+    child :notes
+
+    child :work_phone_number, model: 'ReadmeDataModels::PhoneNumber',
+                              static: { name: :phone_number_type, value: 'work' }
+
+    child :cell_phone_number, model: 'ReadmeDataModels::PhoneNumber',
+                              static: { name: :phone_number_type, value: 'cell' }
+
+    child :fax_phone_number,  model: 'ReadmeDataModels::PhoneNumber',
+                              static: { name: :phone_number_type, value: 'fax' }
+  end
+
+  class Practice < Dbee::Base
+    child :patients
+  end
+end
+````
+
+The two DSL methods: parent/child are very similar to ActiveRecord's belongs_to/has_many, respectively.  Options for these methods are:
+
+* **model**: class constant, string, or symbol to use as associated data model.  If omitted, the model name will be the relative, singular, and camelized version of the association name.
+* **foreign_key**: name of the key on the child table.  If omitted for child then it will resolve as singular, underscored, de-modulized class name suffixed with '\_id'.  If omitted for parent it will resolve to 'id'.
+* **primary_key**: name of the key on the parent table.  If omitted for child then it will resolve as 'id'.  If omitted for parent then it will resolve as the singular, underscored, de-modulized name of the relationship suffixed with '\_id'
+
+#### Code-First Data Modeling (Without Inflection)
+
+You can use the raw `association` method you wish to fully control the entire referencing configuration.
+
+````ruby
+module ReadmeDataModels
+  class PhoneNumber < Dbee::Base
+    table :phones
+
+    association :patient, model: 'ReadmeDataModels::Patient', constraints: {
+      type: :reference, name: :patient_id, parent: :id
+    }
+  end
+
+  class Note < Dbee::Base
+    association :patient, model: 'ReadmeDataModels::Patient', constraints: {
+      type: :reference, name: :patient_id, parent: :id
+    }
+  end
+
+  class Patient < Dbee::Base
+    association :notes, model: 'ReadmeDataModels::Note', constraints: {
       type: :reference, name: :patient_id, parent: :id
     }
 
-    association :work_phone_number, model: PhoneNumbers, constraints: [
+    association :work_phone_number, model: 'ReadmeDataModels::PhoneNumber', constraints: [
       { type: :reference, name: :patient_id, parent: :id },
       { type: :static, name: :phone_number_type, value: 'work' }
     ]
 
-    association :cell_phone_number, model: PhoneNumbers, constraints: [
+    association :cell_phone_number, model: 'ReadmeDataModels::PhoneNumber', constraints: [
       { type: :reference, name: :patient_id, parent: :id },
       { type: :static, name: :phone_number_type, value: 'cell' }
     ]
 
-    association :fax_phone_number, model: PhoneNumbers, constraints: [
+    association :fax_phone_number, model: 'ReadmeDataModels::PhoneNumber', constraints: [
       { type: :reference, name: :patient_id, parent: :id },
       { type: :static, name: :phone_number_type, value: 'fax' }
     ]
   end
 
-  class Practices < Dbee::Base
-    association :patients, model: Patients, constraints: {
+  class Practice < Dbee::Base
+    association :patients, model: Patient, constraints: {
       type: :reference, name: :practice_id, parent: :id
     }
   end
 end
-
 ````
 
-**Note:** the 'table' directive is optional, and if omitted, the classes name will be turned into snake_case and used.  In the above example you can see we wanted the class name of PhoneNumbers but the table is actually 'phones'
-
+The two code-first examples above should be technically equivalent.
 
 #### Configuration-First Data Modeling
 
 You can choose to alternatively describe your data model using configuration.  The YAML below is equivalent to the Ruby sub-classes above:
 
 ````yaml
-name: practices
+name: practice
 models:
   - name: patients
     constraints:
@@ -182,15 +228,14 @@ You can leverage the model partitioners for hard-coding partitioning by column=v
 ##### Code-first:
 
 ````ruby
-class Dogs < Dbee::Base
-  table 'animals'
+class Animal < Dbee::Base
+end
 
+class Dog < Animal
   partitioner :type, 'Dog'
 end
 
-class Cats < Dbee::Base
-  table 'animals'
-
+class Cat < Animal
   partitioner :type, 'Cat'
 end
 ````
@@ -199,14 +244,14 @@ end
 
 ````yaml
 Dogs:
-  name: dogs
+  name: dog
   table: animals
   partitioners:
     - name: type
       value: Dog
 
 Cats:
-  name: cats
+  name: cat
   table: animals
   partitioners:
     - name: type
@@ -309,10 +354,9 @@ Here are some sample executions based off the preceding examples:
 ##### Code-First Execution
 
 ````ruby
-require 'dbee'
 require 'dbee/providers/active_record_provider'
 
-class Practices < Dbee::Base; end
+class Practice < Dbee::Base; end
 
 provider = Dbee::Providers::ActiveRecordProvider.new
 
@@ -324,19 +368,18 @@ query = {
   ]
 }
 
-sql = Dbee.sql(Practices, query, provider)
+sql = Dbee.sql(Practice, query, provider)
 ````
 
 ##### Configuration-First Execution
 
 ````ruby
-require 'dbee'
 require 'dbee/providers/active_record_provider'
 
 provider = Dbee::Providers::ActiveRecordProvider.new
 
 model = {
-  name: :practices
+  name: :practice
 }
 
 query = {

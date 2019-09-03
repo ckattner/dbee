@@ -13,31 +13,31 @@ module Models
   class PhoneNumber < Dbee::Base; end
 
   class Demographic < Dbee::Base
-    children :phone_numbers
+    child :phone_numbers
   end
 
   class MemberBase < Dbee::Base
-    children :demos, model: 'Models::Demographic', foreign_key: :member_id
+    child :demos, model: 'Models::Demographic', foreign_key: :member_id
 
-    children :movies, foreign_key: :member_id
+    child :movies, foreign_key: :member_id
   end
 
   class Member < MemberBase
     table 'members'
 
-    children :favorite_comic_movies, model: Movie, static: { name: :genre, value: 'comic' }
+    child :favorite_comic_movies, model: Movie, static: { name: :genre, value: 'comic' }
 
-    children :favorite_mystery_movies, model: Movie, constraints: [
+    child :favorite_mystery_movies, model: Movie, constraints: [
       { type: :static, name: :genre, value: 'mystery' }
     ]
 
-    children :favorite_comedy_movies, model: Movie, constraints: {
+    child :favorite_comedy_movies, model: Movie, constraints: {
       type: :static, name: :genre, value: 'comedy'
     }
   end
 
   class TheaterBase < Dbee::Base
-    children :members, foreign_key: :tid, constraints: [
+    child :members, foreign_key: :tid, constraints: [
       { type: :reference, name: :partition, parent: :partition }
     ]
   end
@@ -75,17 +75,17 @@ module ReadmeDataModels
   class Note < Dbee::Base; end
 
   class Patient < Dbee::Base
-    children :notes
+    child :notes
 
-    children :work_phone_number, model: PhoneNumber, static: {
+    child :work_phone_number, model: PhoneNumber, static: {
       name: :phone_number_type, value: 'work'
     }
 
-    children :cell_phone_number, model: PhoneNumber, constraints: [
+    child :cell_phone_number, model: PhoneNumber, constraints: [
       { type: :static, name: :phone_number_type, value: 'cell' }
     ]
 
-    children :fax_phone_number, model: PhoneNumber, constraints: [
+    child :fax_phone_number, model: PhoneNumber, constraints: [
       { type: :static, name: :phone_number_type, value: 'fax' }
     ]
   end
@@ -126,7 +126,7 @@ end
 # Examples of Rails Single Table Inheritance.
 module PartitionerExamples
   class Owner < Dbee::Base
-    children :dogs
+    child :dogs
   end
 
   class Animal < Dbee::Base; end

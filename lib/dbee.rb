@@ -21,6 +21,15 @@ require_relative 'dbee/providers'
 # Top-level namespace that provides the main public API.
 module Dbee
   class << self
+    # Use this to override the built in Dry::Inflector instance.
+    # This is useful is you have your own grammar/overrides you need to load.
+    # See the referenced gem here: https://github.com/dry-rb/dry-inflector
+    attr_writer :inflector
+
+    def inflector
+      @inflector ||= Dry::Inflector.new
+    end
+
     def sql(model, query, provider)
       query = Query.make(query)
       model =
