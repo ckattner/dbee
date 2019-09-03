@@ -8,55 +8,53 @@
 #
 
 module Models
-  class Movies < Dbee::Base
-  end
+  class Movie < Dbee::Base; end
 
-  class PhoneNumbers < Dbee::Base
-  end
+  class PhoneNumber < Dbee::Base; end
 
-  class Demographics < Dbee::Base
-    association :phone_numbers, model: 'Models::PhoneNumbers',
+  class Demographic < Dbee::Base
+    association :phone_numbers, model: 'Models::PhoneNumber',
                                 constraints: {
                                   name: :demographic_id,
                                   parent: :id
                                 }
   end
 
-  class MembersBase < Dbee::Base
-    table 'members'
-
-    association :demos, model: Demographics,
+  class MemberBase < Dbee::Base
+    association :demos, model: Demographic,
                         constraints: { type: :reference, name: :member_id, parent: :id }
 
-    association :movies, model: Movies,
+    association :movies, model: Movie,
                          constraints: { name: :member_id, parent: :id }
   end
 
-  class Members < MembersBase
-    association :favorite_comic_movies, model: Movies, constraints: [
+  class Member < MemberBase
+    table 'members'
+
+    association :favorite_comic_movies, model: Movie, constraints: [
       { type: :reference, name: :member_id, parent: :id },
       { type: :static, name: :genre, value: 'comic' }
     ]
 
-    association :favorite_mystery_movies, model: Movies, constraints: [
+    association :favorite_mystery_movies, model: Movie, constraints: [
       { type: :reference, name: :member_id, parent: :id },
       { type: :static, name: :genre, value: 'mystery' }
     ]
 
-    association :favorite_comedy_movies, model: Movies, constraints: [
+    association :favorite_comedy_movies, model: Movie, constraints: [
       { type: :reference, name: :member_id, parent: :id },
       { type: :static, name: :genre, value: 'comedy' }
     ]
   end
 
-  class TheatersBase < Dbee::Base
-    association :members, model: Members, constraints: [
+  class TheaterBase < Dbee::Base
+    association :members, model: Member, constraints: [
       { type: :reference, name: :tid, parent: :id },
       { type: :reference, name: :partition, parent: :partition }
     ]
   end
 
-  class Theaters < TheatersBase
+  class Theater < TheaterBase
     table 'theaters'
 
     association :parent_theater, model: self, constraints: [
@@ -72,8 +70,7 @@ module Models
     table 'table_set_to_b'
   end
 
-  class C < A
-  end
+  class C < A; end
 
   class D < A
     table ''
@@ -85,36 +82,35 @@ module Models
 end
 
 module ReadmeDataModels
-  class PhoneNumbers < Dbee::Base
+  class PhoneNumber < Dbee::Base
     table :phones
   end
 
-  class Notes < Dbee::Base
-  end
+  class Note < Dbee::Base; end
 
-  class Patients < Dbee::Base
-    association :notes, model: Notes, constraints: {
+  class Patient < Dbee::Base
+    association :notes, model: Note, constraints: {
       type: :reference, name: :patient_id, parent: :id
     }
 
-    association :work_phone_number, model: PhoneNumbers, constraints: [
+    association :work_phone_number, model: PhoneNumber, constraints: [
       { type: :reference, name: :patient_id, parent: :id },
       { type: :static, name: :phone_number_type, value: 'work' }
     ]
 
-    association :cell_phone_number, model: PhoneNumbers, constraints: [
+    association :cell_phone_number, model: PhoneNumber, constraints: [
       { type: :reference, name: :patient_id, parent: :id },
       { type: :static, name: :phone_number_type, value: 'cell' }
     ]
 
-    association :fax_phone_number, model: PhoneNumbers, constraints: [
+    association :fax_phone_number, model: PhoneNumber, constraints: [
       { type: :reference, name: :patient_id, parent: :id },
       { type: :static, name: :phone_number_type, value: 'fax' }
     ]
   end
 
-  class Practices < Dbee::Base
-    association :patients, model: Patients, constraints: {
+  class Practice < Dbee::Base
+    association :patients, model: Patient, constraints: {
       type: :reference, name: :practice_id, parent: :id
     }
   end
@@ -126,6 +122,8 @@ module Cycles
   end
 
   class A < BaseA
+    table :as
+
     association :b2, model: 'Cycles::B'
   end
 
@@ -146,16 +144,15 @@ end
 
 # Examples of Rails Single Table Inheritance.
 module PartitionerExamples
-  class Owners < Dbee::Base
-    association :dogs, model: 'PartitionerExamples::Dogs', constraints: {
+  class Owner < Dbee::Base
+    association :dogs, model: 'PartitionerExamples::Dog', constraints: {
       name: :owner_id, parent: :id
     }
   end
 
-  class Animals < Dbee::Base
-  end
+  class Animal < Dbee::Base; end
 
-  class Dogs < Animals
+  class Dog < Animal
     partitioner :type, 'Dog'
 
     partitioner :deleted, false

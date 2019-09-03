@@ -15,13 +15,16 @@ module Dbee
         value.is_a?(String) || value.is_a?(Symbol) ? Object.const_get(value) : value
       end
 
-      def tableize(value)
-        value.split('::')
-             .last
-             .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-             .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-             .tr('-', '_')
-             .downcase
+      def inflected_table_name(name)
+        inflector.pluralize(inflector.underscore(inflector.demodulize(name)))
+      end
+
+      def inflected_class_name(name)
+        inflector.underscore(inflector.demodulize(name))
+      end
+
+      def inflector
+        @inflector ||= Dry::Inflector.new
       end
     end
   end

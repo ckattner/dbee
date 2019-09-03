@@ -38,7 +38,7 @@ module Dbee
       # of a Query.  This is not true for configuration-first Model definitions because, in that
       # case, cycles do not exist since the nature of the configuration is flat.
       def to_model(key_chain, name = nil, constraints = [], path_parts = [])
-        derived_name  = name.to_s.empty? ? tableize(self.name) : name.to_s
+        derived_name  = name.to_s.empty? ? inflected_class_name(self.name) : name.to_s
         key           = [key_chain, derived_name, constraints, path_parts]
 
         to_models[key] ||= Model.make(
@@ -69,7 +69,7 @@ module Dbee
 
       def inherited_table_name
         subclasses(BASE_CLASS_CONSTANT).find(&:table_name?)&.table_name ||
-          tableize(reversed_subclasses(BASE_CLASS_CONSTANT).first.name)
+          inflected_table_name(reversed_subclasses(BASE_CLASS_CONSTANT).first.name)
       end
 
       def inherited_associations

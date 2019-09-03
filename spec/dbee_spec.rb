@@ -45,7 +45,7 @@ describe Dbee do
     end
 
     it 'accepts a Dbee::Base constant as a model and passes a Model instance to provider#sql' do
-      model_constant = Models::Theaters
+      model_constant = Models::Theater
 
       expect(provider).to receive(:sql).with(model_constant.to_model(query.key_chain), query)
 
@@ -53,7 +53,7 @@ describe Dbee do
     end
 
     it 'accepts a Dbee::Query instance as a query and passes a Query instance to provider#sql' do
-      model = Models::Theaters.to_model(query.key_chain)
+      model = Models::Theater.to_model(query.key_chain)
 
       expect(provider).to receive(:sql).with(model, query)
 
@@ -61,7 +61,7 @@ describe Dbee do
     end
 
     it 'accepts a hash as a query and passes a Query instance to provider#sql' do
-      model = Models::Theaters.to_model(query.key_chain)
+      model = Models::Theater.to_model(query.key_chain)
 
       expect(provider).to receive(:sql).with(model, query)
 

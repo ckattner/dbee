@@ -123,7 +123,7 @@ describe Dbee::Model do
                                        patients.fax_phone_number.e
                                      ])
 
-      code_model = ReadmeDataModels::Practices.to_model(key_chain)
+      code_model = ReadmeDataModels::Practice.to_model(key_chain)
 
       expect(config_model).to eq(code_model)
     end

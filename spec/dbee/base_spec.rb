@@ -33,7 +33,7 @@ describe Dbee::Base do
 
       key_chain = Dbee::KeyChain.new(key_paths)
 
-      actual_model = Models::Theaters.to_model(key_chain)
+      actual_model = Models::Theater.to_model(key_chain)
 
       expect(actual_model).to eq(expected_model)
     end
@@ -82,7 +82,7 @@ describe Dbee::Base do
       key_paths = %w[id]
       key_chain = Dbee::KeyChain.new(key_paths)
 
-      actual_model = PartitionerExamples::Dogs.to_model(key_chain)
+      actual_model = PartitionerExamples::Dog.to_model(key_chain)
 
       expect(actual_model).to eq(expected_model)
     end
@@ -95,7 +95,7 @@ describe Dbee::Base do
       key_paths = %w[id dogs.id]
       key_chain = Dbee::KeyChain.new(key_paths)
 
-      actual_model = PartitionerExamples::Owners.to_model(key_chain)
+      actual_model = PartitionerExamples::Owner.to_model(key_chain)
 
       expect(actual_model).to eq(expected_model)
     end

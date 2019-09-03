@@ -1,5 +1,5 @@
 Theaters, Members, and Movies:
-  name: theaters
+  name: theater
   table: theaters
   models:
     - name: members
@@ -120,7 +120,8 @@ Theaters, Members, and Movies:
                   name: genre
                   value: comedy
 Readme:
-  name: practices
+  name: practice
+  table: practices
   models:
     - name: patients
       constraints:
@@ -162,38 +163,43 @@ Readme:
               value: fax
 Cycle Example:
   name: a
-  table: base_a
+  table: as
   models:
     - name: b1
-      table: b
+      table: bs
       models:
         - name: c
+          table: cs
           models:
             - name: a
-              table: base_a
+              table: as
         - name: d
+          table: ds
           models:
             - name: a
-              table: base_a
+              table: as
     - name: b2
-      table: b
+      table: bs
       models:
         - name: c
+          table: cs
           models:
             - name: a
-              table: base_a
+              table: as
         - name: d
+          table: ds
           models:
             - name: a
-              table: base_a
+              table: as
               models:
                 - name: b1
-                  table: b
+                  table: bs
                   models:
                     - name: c
+                      table: cs
 
 Partitioner Example 1:
-  name: dogs
+  name: dog
   table: animals
   partitioners:
     - name: type
@@ -202,7 +208,8 @@ Partitioner Example 1:
       value: false
 
 Partitioner Example 2:
-  name: owners
+  name: owner
+  table: owners
   models:
     - name: dogs
       table: animals

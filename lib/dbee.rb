@@ -8,6 +8,7 @@
 #
 
 require 'acts_as_hashable'
+require 'dry/inflector'
 require 'forwardable'
 
 require_relative 'dbee/base'
