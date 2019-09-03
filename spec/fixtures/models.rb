@@ -13,19 +13,17 @@ module Models
   class PhoneNumber < Dbee::Base; end
 
   class Demographic < Dbee::Base
-    association :phone_numbers, model: 'Models::PhoneNumber',
-                                constraints: {
-                                  name: :demographic_id,
-                                  parent: :id
-                                }
+    association :phone_numbers, constraints: {
+      name: :demographic_id,
+      parent: :id
+    }
   end
 
   class MemberBase < Dbee::Base
-    association :demos, model: Demographic,
+    association :demos, model: 'Models::Demographic',
                         constraints: { type: :reference, name: :member_id, parent: :id }
 
-    association :movies, model: Movie,
-                         constraints: { name: :member_id, parent: :id }
+    association :movies, constraints: { name: :member_id, parent: :id }
   end
 
   class Member < MemberBase
@@ -48,7 +46,7 @@ module Models
   end
 
   class TheaterBase < Dbee::Base
-    association :members, model: Member, constraints: [
+    association :members, constraints: [
       { type: :reference, name: :tid, parent: :id },
       { type: :reference, name: :partition, parent: :partition }
     ]
@@ -89,7 +87,7 @@ module ReadmeDataModels
   class Note < Dbee::Base; end
 
   class Patient < Dbee::Base
-    association :notes, model: Note, constraints: {
+    association :notes, constraints: {
       type: :reference, name: :patient_id, parent: :id
     }
 
@@ -110,7 +108,7 @@ module ReadmeDataModels
   end
 
   class Practice < Dbee::Base
-    association :patients, model: Patient, constraints: {
+    association :patients, constraints: {
       type: :reference, name: :practice_id, parent: :id
     }
   end
@@ -128,24 +126,24 @@ module Cycles
   end
 
   class B < Dbee::Base
-    association :c, model: 'Cycles::C'
+    association :c
 
-    association :d, model: 'Cycles::D'
+    association :d
   end
 
   class C < Dbee::Base
-    association :a, model: 'Cycles::A'
+    association :a
   end
 
   class D < Dbee::Base
-    association :a, model: 'Cycles::A'
+    association :a
   end
 end
 
 # Examples of Rails Single Table Inheritance.
 module PartitionerExamples
   class Owner < Dbee::Base
-    association :dogs, model: 'PartitionerExamples::Dog', constraints: {
+    association :dogs, constraints: {
       name: :owner_id, parent: :id
     }
   end

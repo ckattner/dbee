@@ -99,7 +99,8 @@ module Dbee
       def associations(key_chain, path_parts)
         inherited_associations.select { |c| key_chain.ancestor_path?(path_parts, c[:name]) }
                               .each_with_object([]) do |config, memo|
-          model_constant          = constantize(config[:model])
+          class_name              = config[:model] || relative_class_name(config[:name])
+          model_constant          = constantize(class_name)
           associated_constraints  = config[:constraints]
           name                    = config[:name]
 
@@ -114,6 +115,10 @@ module Dbee
 
       def to_models
         @to_models ||= {}
+      end
+
+      def relative_class_name(name)
+        (self.name.split('::')[0...-1] + [inflector.classify(name)]).join('::')
       end
     end
   end
