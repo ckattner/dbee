@@ -28,6 +28,40 @@ module Dbee
         tap { @table_name = name.to_s }
       end
 
+      def parent(name, opts = {})
+        primary_key = opts[:primary_key] || inflector.foreign_key(name)
+        foreign_key = opts[:foreign_key] || :id
+
+        reference_constraint = {
+          name: foreign_key,
+          parent: primary_key
+        }
+
+        association_opts = {
+          model: opts[:model],
+          constraints: [reference_constraint] + make_constraints(opts)
+        }
+
+        association(name, association_opts)
+      end
+
+      def children(name, opts = {})
+        primary_key = opts[:primary_key] || :id
+        foreign_key = opts[:foreign_key] || inflector.foreign_key(self.name)
+
+        reference_constraint = {
+          name: foreign_key,
+          parent: primary_key
+        }
+
+        association_opts = {
+          model: opts[:model],
+          constraints: [reference_constraint] + make_constraints(opts)
+        }
+
+        association(name, association_opts)
+      end
+
       def association(name, opts = {})
         tap { associations_by_name[name.to_s] = opts.merge(name: name) }
       end
@@ -119,6 +153,14 @@ module Dbee
 
       def relative_class_name(name)
         (self.name.split('::')[0...-1] + [inflector.classify(name)]).join('::')
+      end
+
+      def array(value)
+        value.is_a?(Hash) ? [value] : Array(value)
+      end
+
+      def make_constraints(opts = {})
+        array(opts[:constraints]) + array(opts[:static]).map { |c| c.merge(type: :static) }
       end
     end
   end
