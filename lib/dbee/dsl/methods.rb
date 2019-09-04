@@ -39,9 +39,7 @@ module Dbee
             Dsl::Association.new(self.name, inflector, name, opts)
           end
 
-        tap do
-          associations_by_name[name.to_s] = value
-        end
+        tap { associations_by_name[name.to_s] = value }
       end
 
       def table_name
