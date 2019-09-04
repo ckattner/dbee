@@ -9,7 +9,7 @@ Dbee arose out of a need for an ad-hoc reporting solution that included:
 * de-coupling from our main ORM (ActiveRecord)
 * Rails 5.2.1 and above compatibility
 
-Dbee provides a very simple Data Modeling and Query API's and as such it is not meant to replace a traditional ORM or your data persistence layer, but compliment them.  This library's goal is to output the SQL statement needed and **nothing** more.
+Dbee provides very simple Data Modeling and Query API's and as such it is not meant to replace a traditional ORM or your data persistence layer, but compliment them.  This library's goal is to output the SQL statement needed and **nothing** more.
 
 Other solutions considered:
 
