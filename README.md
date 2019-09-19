@@ -123,7 +123,7 @@ The two DSL methods: parent/child are very similar to ActiveRecord's belongs_to/
 
 ##### Customizing Inflection Rules
 
-Inflection is provided via the (Dry::Inflector gem)[https://github.com/dry-rb/dry-inflector].  There are options to add custom grammar rules which you can then pass into Dbee.  For example:
+Inflection is provided via the [Dry::Inflector gem](https://github.com/dry-rb/dry-inflector).  There are options to add custom grammar rules which you can then pass into Dbee.  For example:
 
 ````ruby
 Dbee.inflector = Dry::Inflector.new do |inflections|
