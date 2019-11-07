@@ -1,3 +1,13 @@
+# 2.0.2 (November 7th, 2019)
+
+### Additions:
+
+* As of 2019-11-07, it is not recommended to use Ruby 2.3, but support was requested and added for Ruby 2.3.8.  This is subject to being deprecated with next version.
+
+### Fixes:
+
+* Constantizing during inflection will now first check Object#const_defined? and if it is missing, it will now call Object#const_missing.  This should work better with auto-loaded environments where constant names may collide, since Object#const_get will traverse down the entire hierarchy and may lead to false positives.
+
 # 2.0.0 (September 3rd, 2019)
 
 ### Additions:

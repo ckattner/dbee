@@ -46,7 +46,11 @@ module Dbee
       end
 
       def constantize(value)
-        value.is_a?(String) || value.is_a?(Symbol) ? Object.const_get(value) : value
+        value.is_a?(String) || value.is_a?(Symbol) ? object_constant(value) : value
+      end
+
+      def object_constant(value)
+        Object.const_defined?(value) ? Object.const_get(value) : Object.const_missing(value)
       end
     end
   end

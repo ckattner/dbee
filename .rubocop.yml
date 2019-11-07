@@ -14,7 +14,7 @@ Metrics/MethodLength:
   Max: 25
 
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.3
 
 Metrics/AbcSize:
   Max: 16
