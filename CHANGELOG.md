@@ -1,3 +1,20 @@
+# 2.0.3 (January 7th, 2020)
+
+### Fixes:
+
+* Constant resolution will now explicitly set inherit to false when calling `Object#const_defined?` and `Object#const_get`.  This should equate to less false positives.  For example:
+
+```ruby
+class A; end
+
+module B
+  class A; end
+  class C; end
+end
+```
+
+If `B::A` is the desired class, it would not be suitable to just declare an association on `A` as that would resolve explicitly to `::A`.  It also means C cannot be auto-resolved without prefixing/sharing the namespace with parent association `A`.
+
 # 2.0.2 (November 7th, 2019)
 
 ### Additions:
