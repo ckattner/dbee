@@ -7,7 +7,7 @@ rvm:
   - 2.3.8
   - 2.4.6
   - 2.5.5
-  - 2.6.3
+  - 2.6.5
 cache: bundler
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter

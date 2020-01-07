@@ -12,6 +12,7 @@ require 'dry/inflector'
 require 'forwardable'
 
 require_relative 'dbee/base'
+require_relative 'dbee/constant_resolver'
 require_relative 'dbee/key_chain'
 require_relative 'dbee/key_path'
 require_relative 'dbee/model'
