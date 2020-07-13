@@ -1,5 +1,12 @@
-Metrics/LineLength:
+AllCops:
+  TargetRubyVersion: 2.5
+  NewCops: enable
+
+Layout/LineLength:
   Max: 100
+
+Metrics/AbcSize:
+  Max: 16
 
 Metrics/BlockLength:
   ExcludedMethods:
@@ -10,14 +17,8 @@ Metrics/BlockLength:
     - specify
     - define
 
-Metrics/MethodLength:
-  Max: 25
-
-AllCops:
-  TargetRubyVersion: 2.3
-
-Metrics/AbcSize:
-  Max: 16
-
 Metrics/ClassLength:
   Max: 125
+
+Metrics/MethodLength:
+  Max: 25
