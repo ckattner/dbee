@@ -363,6 +363,22 @@ You execute a Query against a Data Model, using a Provider.  The sample provider
 
 Here are some sample executions based off the preceding examples:
 
+##### Base Case
+
+If a query has no fields then it is implied you would like all fields on the root table.  For example:
+
+````ruby
+require 'dbee/providers/active_record_provider'
+
+class Practice < Dbee::Base; end
+
+provider = Dbee::Providers::ActiveRecordProvider.new
+query    = {}
+sql      = Dbee.sql(Practice, query, provider)
+````
+
+It equivalent to saying: `SELECT practices.* FROM practices`.  This helps to establish a deterministic base-case: it returns the same implicit columns that is independent of sql joins (sorters and/or filters may require sql joins.)
+
 ##### Code-First Execution
 
 ````ruby

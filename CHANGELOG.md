@@ -1,3 +1,7 @@
+# 2.1.1 (July 14th, 2020)
+
+* Removed guard that ensured a query has at least one field to establish a more rational base-case.
+
 # 2.1.0 (July 13th, 2020)
 
 ### Additions:

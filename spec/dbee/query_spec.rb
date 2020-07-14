@@ -36,14 +36,6 @@ describe Dbee::Query do
   end
 
   describe '#initialize' do
-    it 'should raise an ArgumentError if fields keyword is missing' do
-      expect { described_class.new }.to raise_error(ArgumentError)
-    end
-
-    it 'should raise a NoFieldsError if no fields were passed in' do
-      expect { described_class.new(fields: []) }.to raise_error(Dbee::Query::NoFieldsError)
-    end
-
     it 'should remove duplicate filters (keep first instance)' do
       query_hash = {
         fields: [

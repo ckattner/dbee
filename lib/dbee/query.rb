@@ -21,37 +21,25 @@ module Dbee
     extend Forwardable
     acts_as_hashable
 
-    class NoFieldsError < StandardError; end
-
     attr_reader :fields,
                 :filters,
-                :groupers,
                 :limit,
                 :sorters
 
     def_delegator :fields,   :sort, :sorted_fields
     def_delegator :filters,  :sort, :sorted_filters
     def_delegator :sorters,  :sort, :sorted_sorters
-    def_delegator :groupers, :sort, :sorted_groupers
 
     def initialize(
-      fields:,
+      fields: [],
       filters: [],
-      groupers: [],
       limit: nil,
       sorters: []
     )
-      @fields = Field.array(fields)
-
-      # If no fields were passed into a query then we will have no data to return.
-      # Let's raise a hard error here and let the consumer deal with it since this may
-      # have implications in downstream SQL generators.
-      raise NoFieldsError if @fields.empty?
-
-      @filters  = Filters.array(filters).uniq
-      @groupers = Array(groupers).map { |k| KeyPath.get(k) }.uniq
-      @limit    = limit.to_s.empty? ? nil : limit.to_i
-      @sorters  = Sorters.array(sorters).uniq
+      @fields  = Field.array(fields)
+      @filters = Filters.array(filters).uniq
+      @limit   = limit.to_s.empty? ? nil : limit.to_i
+      @sorters = Sorters.array(sorters).uniq
 
       freeze
     end
