@@ -20,7 +20,7 @@ Both of these solutions ended up closely coupling our domain data layer to ad-ho
 
 ## Installation
 
-This specific library is the core modeling component of the Dbee framework, but by itself, it not completely usable.  You will need to provide a SQL generator which understands how to convert the data and query modeling to actual SQL.  This library comes with a stub: Dbee::Providers::NullProvider, while the main reference implementation is split out into its own library: [dbee-active_record](https://github.com/bluemarblepayroll/dbee-active_record). Together these two libraries comprise a complete solution.  Refer to the other library for more information on installation.
+This specific library is the core modeling component of the Dbee framework, but by itself, it is not completely usable.  You will need to provide a SQL generator which understands how to convert the data and query modeling to actual SQL.  This library comes with a stub: Dbee::Providers::NullProvider, while the main reference implementation is split out into its own library: [dbee-active_record](https://github.com/bluemarblepayroll/dbee-active_record). Together these two libraries comprise a complete solution.  Refer to the other library for more information on installation.
 
 To install through Rubygems:
 
