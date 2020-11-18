@@ -28,7 +28,7 @@ module Dbee
       # of a Query.  This is not true for configuration-first Model definitions because, in that
       # case, cycles do not exist since the nature of the configuration is flat.
       def to_model(key_chain, name = nil, constraints = [], path_parts = [])
-        derived_name  = name.to_s.empty? ? inflected_class_name(self.name) : name.to_s
+        derived_name  = name.to_s.empty? ? inflected_class_name : name.to_s
         key           = [key_chain, derived_name, constraints, path_parts]
 
         to_models[key] ||= Model.make(
@@ -38,6 +38,17 @@ module Dbee
             constraints,
             path_parts + [name]
           )
+        )
+      end
+
+      def to_model_non_recursive(name = nil)
+        derived_name = name.to_s.empty? ? inflected_class_name : name.to_s
+
+        Model.make(
+          # constraints: constraints,
+          name: derived_name,
+          partitioners: inherited_partitioners,
+          table: inherited_table_name
         )
       end
 
@@ -56,6 +67,10 @@ module Dbee
         reversed_subclasses(BASE_CLASS_CONSTANT).inject([]) do |memo, subclass|
           memo + subclass.partitioners
         end
+      end
+
+      def inflected_class_name
+        inflector.underscore(inflector.demodulize(name))
       end
 
       private
@@ -90,10 +105,6 @@ module Dbee
 
       def inflected_table_name(name)
         inflector.pluralize(inflector.underscore(inflector.demodulize(name)))
-      end
-
-      def inflected_class_name(name)
-        inflector.underscore(inflector.demodulize(name))
       end
     end
   end

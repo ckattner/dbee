@@ -75,6 +75,20 @@ module Dbee
       name <=> other.name
     end
 
+    def hash
+      [
+        name.hash,
+        table.hash,
+        sorted_constraints.hash,
+        sorted_partitioners.hash,
+        sorted_models.hash
+      ].hash
+    end
+
+    def to_s
+      name
+    end
+
     private
 
     attr_reader :models_by_name

@@ -10,14 +10,17 @@
 require 'acts_as_hashable'
 require 'dry/inflector'
 require 'forwardable'
+require 'rgl/adjacency'
+require 'rgl/dot'
 
 require_relative 'dbee/base'
 require_relative 'dbee/constant_resolver'
 require_relative 'dbee/key_chain'
 require_relative 'dbee/key_path'
 require_relative 'dbee/model'
-require_relative 'dbee/query'
 require_relative 'dbee/providers'
+require_relative 'dbee/query'
+require_relative 'dbee/schema'
 
 # Top-level namespace that provides the main public API.
 module Dbee
