@@ -9,6 +9,59 @@
 
 require 'spec_helper'
 
+README_EXAMPLES = {
+  'Get all practices' => {
+    fields: [
+      { key_path: 'id' },
+      { key_path: 'active' },
+      { key_path: 'name' }
+    ]
+  },
+  'Get all practices, limit to 10, and sort by name (descending) then id (ascending)' => {
+    fields: [
+      { key_path: 'id' },
+      { key_path: 'active' },
+      { key_path: 'name' }
+    ],
+    sorters: [
+      { key_path: 'name', direction: :descending },
+      { key_path: 'id' }
+    ],
+    limit: 10
+  },
+  "Get top 5 active practices and patient whose name start with 'Sm':" => {
+    fields: [
+      { key_path: 'name', display: 'Practice Name' },
+      { key_path: 'patients.first', display: 'Patient First Name' },
+      { key_path: 'patients.middle', display: 'Patient Middle Name' },
+      { key_path: 'patients.last', display: 'Patient Last Name' }
+    ],
+    filters: [
+      { type: :equals, key_path: 'active', value: true },
+      { type: :starts_with, key_path: 'patients.last', value: 'Sm' }
+    ],
+    limit: 5
+  },
+  'Get practice IDs, patient IDs, names, and cell phone numbers that starts with 555' => {
+    fields: [
+      { key_path: 'id', display: 'Practice ID #' },
+      { key_path: 'patients.id', display: 'Patient ID #' },
+      { key_path: 'patients.first', display: 'Patient First Name' },
+      { key_path: 'patients.middle', display: 'Patient Middle Name' },
+      { key_path: 'patients.last', display: 'Patient Last Name' },
+      { key_path: 'patients.cell_phone_numbers.phone_number', display: 'Patient Cell #' }
+    ],
+    filters: [
+      { type: :equals, key_path: 'active', value: true },
+      {
+        type: :starts_with,
+        key_path: 'patients.cell_phone_numbers.phone_number',
+        value: '555'
+      }
+    ]
+  }
+}.freeze
+
 describe Dbee::Query do
   let(:config) do
     {
@@ -116,60 +169,7 @@ describe Dbee::Query do
   end
 
   context 'README examples' do
-    EXAMPLES = {
-      'Get all practices' => {
-        fields: [
-          { key_path: 'id' },
-          { key_path: 'active' },
-          { key_path: 'name' }
-        ]
-      },
-      'Get all practices, limit to 10, and sort by name (descending) then id (ascending)' => {
-        fields: [
-          { key_path: 'id' },
-          { key_path: 'active' },
-          { key_path: 'name' }
-        ],
-        sorters: [
-          { key_path: 'name', direction: :descending },
-          { key_path: 'id' }
-        ],
-        limit: 10
-      },
-      "Get top 5 active practices and patient whose name start with 'Sm':" => {
-        fields: [
-          { key_path: 'name', display: 'Practice Name' },
-          { key_path: 'patients.first', display: 'Patient First Name' },
-          { key_path: 'patients.middle', display: 'Patient Middle Name' },
-          { key_path: 'patients.last', display: 'Patient Last Name' }
-        ],
-        filters: [
-          { type: :equals, key_path: 'active', value: true },
-          { type: :starts_with, key_path: 'patients.last', value: 'Sm' }
-        ],
-        limit: 5
-      },
-      'Get practice IDs, patient IDs, names, and cell phone numbers that starts with 555' => {
-        fields: [
-          { key_path: 'id', display: 'Practice ID #' },
-          { key_path: 'patients.id', display: 'Patient ID #' },
-          { key_path: 'patients.first', display: 'Patient First Name' },
-          { key_path: 'patients.middle', display: 'Patient Middle Name' },
-          { key_path: 'patients.last', display: 'Patient Last Name' },
-          { key_path: 'patients.cell_phone_numbers.phone_number', display: 'Patient Cell #' }
-        ],
-        filters: [
-          { type: :equals, key_path: 'active', value: true },
-          {
-            type: :starts_with,
-            key_path: 'patients.cell_phone_numbers.phone_number',
-            value: '555'
-          }
-        ]
-      }
-    }.freeze
-
-    EXAMPLES.each_pair do |name, query|
+    README_EXAMPLES.each_pair do |name, query|
       specify name do
         expect(described_class.make(query)).to be_a(described_class)
       end
