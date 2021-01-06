@@ -119,6 +119,214 @@ Theaters, Members, and Movies:
                 - type: static
                   name: genre
                   value: comedy
+
+Theaters, Members, and Movies Undirected Graph Based:
+  models:
+    theaters:
+    members:
+    demos:
+      table: demographics
+    phone_numbers:
+    movies:
+    favorite_comic_movies:
+      table: movies
+    favorite_mystery_movies:
+      table: movies
+    favorite_comedy_movies:
+      table: movies
+    ticket_prices:
+  relationships:
+    - from: member
+      to: theaters
+      constraints:
+      - type: reference
+        parent: id
+        name: tid
+      - type: reference
+        parent: partition
+        name: partition
+    - for: ['demos', 'members']
+      constraints:
+        - type: reference
+          parent: id
+          name: member_id
+    - for: ['demos', 'phone_numbers']
+      constraints:
+        - type: reference
+          parent: id
+          name: demographic_id
+    - for: ['members', 'movies']
+      constraints:
+        - type: reference
+          parent: id
+          name: member_id
+    - for: ['members', 'favorite_comic_movies']
+      constraints:
+        - type: reference
+          parent: id
+          name: member_id
+        - type: static
+          name: genre
+          value: comic
+    - for: ['members', 'favorite_mystery_movies']
+      constraints:
+        - type: reference
+          parent: id
+          name: member_id
+        - type: static
+          name: genre
+          value: mystery
+    - for: ['members', 'favorite_comedy_movies']
+      constraints:
+        - type: reference
+          parent: id
+          name: member_id
+        - type: static
+          name: genre
+          value: comedy
+
+Theaters, Members, and Movies Directed Graph Based:
+  theaters:
+    relationships:
+      members:
+        - type: reference
+          name: id
+          foreign_key: tid
+      parent_theater:
+        - type: reference
+          name: parent_theater_id
+          foreign_key: id
+  parent_theater:
+    table: theaters # NOTE that this could be "model" instead of table
+  members:
+    relationships:
+      demos:
+        - type: reference
+          name: id
+          foreign_key: member_id
+      favorite_comic_movies:
+        - type: reference
+          name: id
+          foreign_key: member_id
+        - type: static
+          name: genre
+          value: comic
+      movies:
+        - type: reference
+          name: id
+          foreign_key: member_id
+      favorite_mystery_movies:
+        - type: reference
+          name: id
+          foreign_key: member_id
+        - type: static
+          name: genre
+          value: mystery
+      favorite_comedy_movies:
+        - type: reference
+          name: id
+          foreign_key: member_id
+        - type: static
+          name: genre
+          value: comedy
+  demos:
+    table: demographics
+    relationships:
+      phone_numbers:
+        - type: reference
+          name: id
+          foreign_key: demographic_id
+  phone_numbers:
+  movies:
+  favorite_comic_movies:
+    table: movies
+  favorite_mystery_movies:
+    table: movies
+  favorite_comedy_movies:
+    table: movies
+
+# In this version note that favorite_comic_movies, favorite_mystery_movies, and
+# favorite_comedy_movies are namespaced within members. This is more true to
+# the DSL where these 'models' are only created within the context of a member.
+# These sub-models can not be reused by other models unless they are broken out
+# into their own DSL classes.
+Theaters, Members, and Movies Directed Graph Based with Nested Sub-models:
+  theaters:
+    relationships:
+      - name: members
+        constraints:
+          - type: reference
+            name: id
+            parent: tid
+      - name: parent_theater
+        constraints:
+          - type: reference
+            name: parent_theater_id
+            parent: id
+  parent_theater:
+    table: theaters # NOTE that this could be "model" instead of table
+  members:
+    relationships:
+      - name: demo
+        model: demographics
+        constraints:
+          - type: reference
+            name: id
+            foreign_key: member_id
+      - name: movies
+        constraints:
+          - type: reference
+            name: id
+            parent: member_id
+      # - name: favorite_comic_movies
+      #   constraints:
+      #     - type: reference
+      #       name: id
+      #       foreign_key: member_id
+      #     - type: static
+      #       name: genre
+      #       value: comic
+      # - name: members.favorite_comic_movies
+      #   constraints:
+      #     - type: reference
+      #       name: id
+      #       parent: member_id
+      #     - type: static
+      #       name: genre
+      #       value: comic
+      # - name: members.favorite_mystery_movies
+      #   constraints:
+      #     - type: reference
+      #       name: id
+      #       parent: member_id
+      #     - type: static
+      #       name: genre
+      #       value: mystery
+      # - name: members.favorite_comedy_movies
+      #   constraints:
+      #     - type: reference
+      #       name: id
+      #       parent: member_id
+      #     - type: static
+      #       name: genre
+      #       value: comedy
+  demographics:
+    table: demographics
+    relationships:
+      - name: phone_numbers
+        constraints:
+          - type: reference
+            name: id
+            parent: demographic_id
+  phone_numbers:
+  movies:
+  # members.favorite_comic_movies:
+  #   table: movies
+  # members.favorite_mystery_movies:
+  #   table: movies
+  # members.favorite_comedy_movies:
+  #   table: movies
+
 Readme:
   name: practice
   table: practices

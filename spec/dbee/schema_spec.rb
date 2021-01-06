@@ -12,20 +12,20 @@ require_relative '../fixtures/models'
 
 describe Dbee::Schema do
   it 'knows if two models are related' do
-    dbee_model_theater = Models::Theater.to_model_non_recursive
-    dbee_model_members = Models::Member.to_model_non_recursive(:members)
-    # There is confusion about the singular class name and the plural relationship name.
-    dbee_model_member = Models::Member.to_model_non_recursive(:member)
+    model_name = 'Theaters, Members, and Movies Directed Graph Based with Nested Sub-models'
+    schema_config = yaml_fixture('models.yaml')[model_name]
+    theaters_model = Dbee::Model.make(schema_config['theaters'].merge('name' => 'theaters'))
+    members_model = Dbee::Model.make(schema_config['members'].merge('name' => 'members'))
+    demographics_model = Dbee::Model.make(
+      schema_config['demographics'].merge('name' => 'demographics')
+    )
 
-    dbee_model_demographic = Models::Demographic.to_model_non_recursive(:demos)
-
-    subject = described_class.new([Models::Theater, Models::Member, Models::Demographic])
-    expect(subject.neighbors?(dbee_model_theater, dbee_model_members)).to be(true)
-    expect(subject.neighbors?(dbee_model_member, dbee_model_demographic)).to be(true)
+    subject = described_class.new(schema_config)
+    # subject.write_to_graphic_file
+    expect(subject.neighbors?(theaters_model, members_model)).to be(true)
+    expect(subject.neighbors?(members_model, demographics_model)).to be(true)
 
     # Theaters and demographics related through members and are not direct neighbors.
-    expect(subject.neighbors?(dbee_model_theater, dbee_model_demographic)).to be(false)
-
-    # puts "file name: #{subject.write_to_graphic_file}"
+    expect(subject.neighbors?(theaters_model, demographics_model)).to be(false)
   end
 end

@@ -17,10 +17,10 @@ module Dbee
     extend Forwardable
     def_delegators :graph, :write_to_graphic_file
 
-    def initialize(models)
-      @models = models || []
-      @graph = RGL::AdjacencyGraph.new
+    def initialize(schema_config)
+      init_models_by_name(schema_config)
 
+      @graph = RGL::DirectedAdjacencyGraph.new
       build_graph
 
       freeze
@@ -32,28 +32,29 @@ module Dbee
 
     private
 
-    attr_reader :graph
+    attr_reader :graph, :models_by_name
 
     def build_graph
-      models.each do |model|
-        model_a = dbee_models_by_name[model.inflected_class_name] ||= model.to_model_non_recursive
-
-        model.inherited_associations.each do |association|
-          # puts "model: #{model}, der_name: #{model.inflected_class_name}, " \
-          #      "assc. name: #{association.name}, assc class: #{association.model_constant}"
-          model_b = dbee_models_by_name[association.name] ||= \
-            dbee_model_from_association(association)
-          graph.add_edge(model_a, model_b)
+      models_by_name.each do |_name, model|
+        model.relationships.each do |relationship|
+          model_name = relationship.model || relationship.name
+          model_b = models_by_name[model_name] || raise("no model found named: #{model_name}")
+          graph.add_edge(model, model_b)
         end
       end
     end
 
-    def dbee_models_by_name
-      @dbee_models_by_name || {}
-    end
-
     def dbee_model_from_association(association)
       association.model_constant.to_model_non_recursive(association.name)
+    end
+
+    def init_models_by_name(schema_config)
+      @models_by_name = {}
+
+      schema_config.each do |model_name, model_config|
+        args = (model_config || {}).merge('name' => model_name)
+        @models_by_name[model_name] = Model.make(args)
+      end
     end
   end
 end

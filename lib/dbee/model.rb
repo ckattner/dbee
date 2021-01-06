@@ -9,6 +9,7 @@
 
 require_relative 'model/constraints'
 require_relative 'model/partitioner'
+require_relative 'model/relationships'
 
 module Dbee
   # In DB terms, a Model is usually a table, but it does not have to be.  You can also re-model
@@ -19,21 +20,29 @@ module Dbee
 
     class ModelNotFoundError < StandardError; end
 
-    attr_reader :constraints, :filters, :name, :partitioners, :table
+    attr_reader :constraints, :filters, :name, :partitioners, :relationships, :table
 
     def_delegator :models_by_name,  :values,  :models
     def_delegator :models,          :sort,    :sorted_models
     def_delegator :constraints,     :sort,    :sorted_constraints
     def_delegator :partitioners,    :sort,    :sorted_partitioners
 
-    def initialize(name:, constraints: [], models: [], partitioners: [], table: '')
-      raise ArgumentError, 'name is required' if name.to_s.empty?
-
+    def initialize(
+      name:,
+      constraints: [],
+      relationships: [],
+      models: [],
+      partitioners: [],
+      table: ''
+    )
       @name           = name.to_s
-      @constraints    = Constraints.array(constraints).uniq
+      @constraints    = Constraints.array(constraints || []).uniq
+      @relationships  = Relationships.array(relationships || []).uniq
       @models_by_name = name_hash(Model.array(models))
       @partitioners   = Partitioner.array(partitioners).uniq
       @table          = table.to_s.empty? ? @name : table.to_s
+
+      ensure_input_is_valid
 
       freeze
     end
@@ -100,6 +109,13 @@ module Dbee
 
     def name_hash(array)
       array.map { |a| [a.name, a] }.to_h
+    end
+
+    def ensure_input_is_valid
+      raise ArgumentError, 'name is required' if name.to_s.empty?
+
+      constraints&.any? && relationships&.any? && \
+        raise(ArgumentError, 'constraints and relationships are mutually exclusive')
     end
   end
 end

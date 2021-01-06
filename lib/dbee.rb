@@ -15,6 +15,7 @@ require 'rgl/dot'
 
 require_relative 'dbee/base'
 require_relative 'dbee/constant_resolver'
+require_relative 'dbee/dsl_schema'
 require_relative 'dbee/key_chain'
 require_relative 'dbee/key_path'
 require_relative 'dbee/model'
