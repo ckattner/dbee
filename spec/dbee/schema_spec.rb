@@ -25,7 +25,7 @@ describe Dbee::Schema do
   let(:demographics_model) { make_model('demographics') }
   let(:members_model) { make_model('members') }
   let(:movies_model) { make_model('movies') }
-  let(:phone_numbers_model) { make_model('schema_config') }
+  let(:phone_numbers_model) { make_model('phone_numbers') }
   let(:theaters_model) { make_model('theaters') }
 
   let(:subject) { described_class.new(schema_config) }
@@ -52,16 +52,14 @@ describe Dbee::Schema do
       expect(subject.expand_query_path(%w[members movies])).to eq expected_plan
     end
 
-    xit 'traverses aliased models' do
+    it 'traverses aliased models' do
       expected_plan = {
         %w[members] => members_model,
         %w[members demos] => demographics_model,
         %w[members demos phone_numbers] => phone_numbers_model
       }
 
-      plan = subject.ancestors!(%w[members demos phone_numbers])
-
-      expect(plan).to eq(expected_plan)
+      expect(subject.expand_query_path(%w[members demos phone_numbers])).to eq expected_plan
     end
 
     it 'raises an error given an unknown model' do
@@ -71,10 +69,7 @@ describe Dbee::Schema do
     it 'raises an error given an unknown path' do
       expect do
         subject.expand_query_path(%w[theaters demographics])
-      end.to raise_error(
-        Dbee::Model::ModelNotFoundError,
-        'no path exists from theaters to demographics'
-      )
+      end.to raise_error("model 'theaters' does not have a 'demographics' relationship")
     end
   end
 end

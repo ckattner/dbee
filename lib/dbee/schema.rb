@@ -32,31 +32,40 @@ module Dbee
 
     # TODO: document me!
     def expand_query_path(query_path)
-      query_path.each_with_object({}) do |path_name, expanded_path|
-        model = models_by_name[path_name] || raise(Dbee::Model::ModelNotFoundError, path_name)
-
-        previous_path = expanded_path.keys&.last || []
-        previous_model = expanded_path[previous_path]
-        path = previous_path + [path_name]
-
-        previous_model && !neighbors?(previous_model, model) && \
-          raise(Dbee::Model::ModelNotFoundError,
-                "no path exists from #{previous_path.last} to #{path_name}")
-
-        expanded_path[path] = model
-      end
+      expanded_path = { [query_path.first] => model_for_name!(query_path.first) }
+      expand_join_path(query_path.drop(1), expanded_path)
     end
 
     private
 
     attr_reader :graph, :models_by_name
 
+    def expand_join_path(query_path, init_expanded_path)
+      query_path.each_with_object(init_expanded_path) do |path_name, expanded_path|
+        previous_path = expanded_path.keys.last
+        previous_model = expanded_path[previous_path]
+        relationship = relationship_for_name!(previous_model, path_name)
+
+        model = model_for_name!(relationship.model_name)
+        path = previous_path + [path_name]
+
+        expanded_path[path] = model
+      end
+    end
+
+    def relationship_for_name!(model, rel_name)
+      model.relationship_for_name(rel_name) ||
+        raise("model '#{model.name}' does not have a '#{rel_name}' relationship")
+    end
+
+    def model_for_name!(model_name)
+      models_by_name[model_name] || raise(Model::ModelNotFoundError, model_name)
+    end
+
     def build_graph
       models_by_name.each do |_name, model|
         model.relationships.each do |relationship|
-          model_name = relationship.model || relationship.name
-          model_b = models_by_name[model_name] || raise("no model found named: #{model_name}")
-          graph.add_edge(model, model_b)
+          graph.add_edge(model, model_for_name!(relationship.model_name))
         end
       end
     end

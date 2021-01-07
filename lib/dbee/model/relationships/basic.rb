@@ -24,6 +24,10 @@ module Dbee
           freeze
         end
 
+        def model_name
+          model || name
+        end
+
         def hash
           [self.class.hash, name.hash, constraints.hash, model.hash].hash
         end

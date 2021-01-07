@@ -37,6 +37,7 @@ module Dbee
     )
       @name           = name.to_s
       @constraints    = Constraints.array(constraints || []).uniq
+      # TODO: raise an error if two relationships share a name
       @relationships  = Relationships.array(relationships || []).uniq
       @models_by_name = name_hash(Model.array(models))
       @partitioners   = Partitioner.array(partitioners).uniq
@@ -68,6 +69,10 @@ module Dbee
 
       # Recursively call for next parts in the chain
       model.ancestors!(parts[1..-1], visited_parts, found)
+    end
+
+    def relationship_for_name(relationship_name)
+      relationships.find { |relationship| relationship.name == relationship_name }
     end
 
     # TODO: add relationships
