@@ -62,6 +62,7 @@ module Dbee
       models_by_name[model_name] || raise(Model::ModelNotFoundError, model_name)
     end
 
+    # TODO: split out aliases into their own nodes
     def build_graph
       models_by_name.each do |_name, model|
         model.relationships.each do |relationship|
