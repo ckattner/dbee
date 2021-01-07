@@ -23,6 +23,18 @@ module Dbee
 
           freeze
         end
+
+        def hash
+          [self.class.hash, name.hash, constraints.hash, model.hash].hash
+        end
+
+        def ==(other)
+          other.instance_of?(self.class) &&
+            other.name == name &&
+            other.constraints == constraints &&
+            other.model == model
+        end
+        alias eql? ==
       end
     end
   end

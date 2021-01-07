@@ -30,6 +30,23 @@ module Dbee
       graph.adjacent_vertices(model_a).any? { |neighbor| neighbor == model_b }
     end
 
+    # TODO: document me!
+    def expand_query_path(query_path)
+      query_path.each_with_object({}) do |path_name, expanded_path|
+        model = models_by_name[path_name] || raise(Dbee::Model::ModelNotFoundError, path_name)
+
+        previous_path = expanded_path.keys&.last || []
+        previous_model = expanded_path[previous_path]
+        path = previous_path + [path_name]
+
+        previous_model && !neighbors?(previous_model, model) && \
+          raise(Dbee::Model::ModelNotFoundError,
+                "no path exists from #{previous_path.last} to #{path_name}")
+
+        expanded_path[path] = model
+      end
+    end
+
     private
 
     attr_reader :graph, :models_by_name

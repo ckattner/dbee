@@ -11,21 +11,70 @@ require 'spec_helper'
 require_relative '../fixtures/models'
 
 describe Dbee::Schema do
-  it 'knows if two models are related' do
-    model_name = 'Theaters, Members, and Movies Directed Graph Based with Nested Sub-models'
-    schema_config = yaml_fixture('models.yaml')[model_name]
-    theaters_model = Dbee::Model.make(schema_config['theaters'].merge('name' => 'theaters'))
-    members_model = Dbee::Model.make(schema_config['members'].merge('name' => 'members'))
-    demographics_model = Dbee::Model.make(
-      schema_config['demographics'].merge('name' => 'demographics')
-    )
+  def make_model(model_name)
+    raise "no model named '#{model_name}'" unless schema_config.key?(model_name)
 
-    subject = described_class.new(schema_config)
+    Dbee::Model.make((schema_config[model_name] || {}).merge('name' => model_name))
+  end
+
+  let(:model_name) do
+    'Theaters, Members, and Movies Directed Graph Based with Nested Sub-models'
+  end
+  let(:schema_config) { yaml_fixture('models.yaml')[model_name] }
+
+  let(:demographics_model) { make_model('demographics') }
+  let(:members_model) { make_model('members') }
+  let(:movies_model) { make_model('movies') }
+  let(:phone_numbers_model) { make_model('schema_config') }
+  let(:theaters_model) { make_model('theaters') }
+
+  let(:subject) { described_class.new(schema_config) }
+
+  it 'knows if two models are related' do
     # subject.write_to_graphic_file
     expect(subject.neighbors?(theaters_model, members_model)).to be(true)
     expect(subject.neighbors?(members_model, demographics_model)).to be(true)
 
     # Theaters and demographics related through members and are not direct neighbors.
     expect(subject.neighbors?(theaters_model, demographics_model)).to be(false)
+  end
+
+  describe '#expand_query_path' do
+    specify 'one model case' do
+      expect(subject.expand_query_path(%w[members])).to eq({ %w[members] => members_model })
+    end
+
+    specify 'two model case' do
+      expected_plan = {
+        %w[members] => members_model,
+        %w[members movies] => movies_model
+      }
+      expect(subject.expand_query_path(%w[members movies])).to eq expected_plan
+    end
+
+    xit 'traverses aliased models' do
+      expected_plan = {
+        %w[members] => members_model,
+        %w[members demos] => demographics_model,
+        %w[members demos phone_numbers] => phone_numbers_model
+      }
+
+      plan = subject.ancestors!(%w[members demos phone_numbers])
+
+      expect(plan).to eq(expected_plan)
+    end
+
+    it 'raises an error given an unknown model' do
+      expect { subject.expand_query_path(%w[bogus]) }.to raise_error Dbee::Model::ModelNotFoundError
+    end
+
+    it 'raises an error given an unknown path' do
+      expect do
+        subject.expand_query_path(%w[theaters demographics])
+      end.to raise_error(
+        Dbee::Model::ModelNotFoundError,
+        'no path exists from theaters to demographics'
+      )
+    end
   end
 end

@@ -70,6 +70,7 @@ module Dbee
       model.ancestors!(parts[1..-1], visited_parts, found)
     end
 
+    # TODO: add relationships
     def ==(other)
       other.instance_of?(self.class) &&
         other.name == name &&
