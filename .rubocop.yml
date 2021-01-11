@@ -9,7 +9,7 @@ Metrics/AbcSize:
   Max: 16
 
 Metrics/BlockLength:
-  ExcludedMethods:
+  IgnoredMethods:
     - let
     - it
     - describe
