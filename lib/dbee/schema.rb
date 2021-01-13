@@ -36,6 +36,10 @@ module Dbee
       expand_join_path(query_path.drop(1), expanded_path)
     end
 
+    def model_for_name!(model_name)
+      models_by_name[model_name] || raise(Model::ModelNotFoundError, model_name)
+    end
+
     private
 
     attr_reader :graph, :models_by_name
@@ -56,10 +60,6 @@ module Dbee
     def relationship_for_name!(model, rel_name)
       model.relationship_for_name(rel_name) ||
         raise("model '#{model.name}' does not have a '#{rel_name}' relationship")
-    end
-
-    def model_for_name!(model_name)
-      models_by_name[model_name] || raise(Model::ModelNotFoundError, model_name)
     end
 
     # TODO: split out aliases into their own nodes
