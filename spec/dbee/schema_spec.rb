@@ -41,34 +41,30 @@ describe Dbee::Schema do
 
   describe '#expand_query_path' do
     specify 'one model case' do
-      expect(subject.expand_query_path(%w[members])).to eq({ %w[members] => members_model })
+      expect(subject.expand_query_path(members_model, Dbee::KeyPath.new('id'))).to eq []
     end
 
     specify 'two model case' do
-      expected_plan = {
-        %w[members] => members_model,
-        %w[members movies] => movies_model
-      }
-      expect(subject.expand_query_path(%w[members movies])).to eq expected_plan
+      expected_path = [members_model.relationship_for_name('movies'), movies_model]
+      expect(
+        subject.expand_query_path(members_model, Dbee::KeyPath.new('movies.id'))
+      ).to eq expected_path
     end
 
     it 'traverses aliased models' do
-      expected_plan = {
-        %w[members] => members_model,
-        %w[members demos] => demographics_model,
-        %w[members demos phone_numbers] => phone_numbers_model
-      }
+      expected_path = [
+        members_model.relationship_for_name('demos'), demographics_model,
+        demographics_model.relationship_for_name('phone_numbers'), phone_numbers_model
+      ]
 
-      expect(subject.expand_query_path(%w[members demos phone_numbers])).to eq expected_plan
+      expect(
+        subject.expand_query_path(members_model, Dbee::KeyPath.new('demos.phone_numbers.id'))
+      ).to eq expected_path
     end
 
-    it 'raises an error given an unknown model' do
-      expect { subject.expand_query_path(%w[bogus]) }.to raise_error Dbee::Model::ModelNotFoundError
-    end
-
-    it 'raises an error given an unknown path' do
+    it 'raises an error given an unknown relationship' do
       expect do
-        subject.expand_query_path(%w[theaters demographics])
+        subject.expand_query_path(theaters_model, Dbee::KeyPath.new('demographics.id'))
       end.to raise_error("model 'theaters' does not have a 'demographics' relationship")
     end
   end

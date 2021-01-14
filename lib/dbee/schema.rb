@@ -31,9 +31,19 @@ module Dbee
     end
 
     # TODO: document me!
-    def expand_query_path(query_path)
-      expanded_path = { [query_path.first] => model_for_name!(query_path.first) }
-      expand_join_path(query_path.drop(1), expanded_path)
+    def expand_query_path(model, key_path, query_path = [])
+      # accept both a Dbeee::KeyPath and an array
+      ancestors = key_path.respond_to?(:ancestor_names) ? key_path.ancestor_names : key_path
+      relationship_name = ancestors.first
+      return query_path unless relationship_name
+
+      relationship = relationship_for_name!(model, relationship_name)
+      join_model = model_for_name!(relationship.model_name)
+      expand_query_path(
+        join_model,
+        ancestors.drop(1),
+        query_path + [relationship_for_name!(model, relationship_name), join_model]
+      )
     end
 
     def model_for_name!(model_name)
@@ -69,10 +79,6 @@ module Dbee
           graph.add_edge(model, model_for_name!(relationship.model_name))
         end
       end
-    end
-
-    def dbee_model_from_association(association)
-      association.model_constant.to_model_non_recursive(association.name)
     end
 
     def init_models_by_name(schema_config)
