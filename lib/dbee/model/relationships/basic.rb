@@ -18,7 +18,7 @@ module Dbee
 
         def initialize(name:, constraints: [], model: nil)
           @name = name || raise(ArgumentError, 'name is required')
-          @constraints = constraints || []
+          @constraints = Constraints.array(constraints || []).uniq
           @model = model
 
           freeze

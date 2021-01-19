@@ -10,8 +10,6 @@
 module Dbee
   # A schema represents an entire graph of related models.
   class Schema
-    acts_as_hashable
-
     attr_reader :models
 
     extend Forwardable
@@ -47,7 +45,7 @@ module Dbee
     end
 
     def model_for_name!(model_name)
-      models_by_name[model_name] || raise(Model::ModelNotFoundError, model_name)
+      models_by_name[model_name.to_s] || raise(Model::ModelNotFoundError, model_name)
     end
 
     private
@@ -86,7 +84,7 @@ module Dbee
 
       schema_config.each do |model_name, model_config|
         args = (model_config || {}).merge('name' => model_name)
-        @models_by_name[model_name] = Model.make(args)
+        @models_by_name[model_name.to_s] = Model.make(args)
       end
     end
   end
