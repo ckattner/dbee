@@ -132,11 +132,21 @@ Theaters, Members, and Movies Directed Graph Based with Nested Sub-models:
             parent: partition
             name: partition
       - name: parent_theater
-        model: theaters
         constraints:
           - type: reference
             name: id
             parent: parent_theater_id
+  parent_theater:
+    table: theaters
+    relationships:
+      - name: members
+        constraints:
+          - type: reference
+            parent: id
+            name: tid
+          - type: reference
+            parent: partition
+            name: partition
   members:
     relationships:
       - name: demos

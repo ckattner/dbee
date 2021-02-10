@@ -22,6 +22,7 @@ require_relative 'dbee/model'
 require_relative 'dbee/providers'
 require_relative 'dbee/query'
 require_relative 'dbee/schema'
+require_relative 'dbee/schema_from_tree_based_model'
 
 # Top-level namespace that provides the main public API.
 module Dbee
@@ -35,16 +36,33 @@ module Dbee
       @inflector ||= Dry::Inflector.new
     end
 
-    def sql(model, query, provider)
+    def sql(schema_hash_or_model, query, provider)
       query = Query.make(query)
-      model =
-        if model.is_a?(Hash) || model.is_a?(Model)
-          Model.make(model)
-        else
-          model.to_model(query.key_chain)
-        end
+      provider.sql(make_schema(schema_hash_or_model, query.key_chain), query)
+    end
 
-      provider.sql(model, query)
+    private
+
+    def make_schema(input, _key_chain)
+      return input if input.is_a?(Dbee::Schema)
+
+      model_or_schema = to_object(input)
+      if model_or_schema.is_a?(Model)
+        SchemaFromTreeBasedModel.convert(model_or_schema)
+      else
+        model_or_schema
+      end
+    end
+
+    def to_object(input)
+      return input unless input.is_a?(Hash)
+
+      if input.key?(:models) && input[:models].is_a?(Array)
+        # This is a tree based model:
+        Model.make(input)
+      else
+        Schema.new(input)
+      end
     end
   end
 end

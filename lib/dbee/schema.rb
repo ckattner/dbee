@@ -48,6 +48,11 @@ module Dbee
       models_by_name[model_name.to_s] || raise(Model::ModelNotFoundError, model_name)
     end
 
+    def ==(other)
+      other.instance_of?(self.class) && other.send(:models_by_name) == models_by_name
+    end
+    alias eql? ==
+
     private
 
     attr_reader :graph, :models_by_name

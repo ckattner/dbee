@@ -38,7 +38,7 @@ module Dbee
       @name           = name.to_s
       @constraints    = Constraints.array(constraints || []).uniq
       # TODO: raise an error if two relationships share a name
-      @relationships  = Relationships.array(relationships || []).uniq
+      @relationships  = Relationships.array(relationships || []).to_set
       @models_by_name = name_hash(Model.array(models))
       @partitioners   = Partitioner.array(partitioners).uniq
       @table          = table.to_s.empty? ? @name : table.to_s
@@ -75,14 +75,9 @@ module Dbee
       relationships.find { |relationship| relationship.name == relationship_name }
     end
 
-    # TODO: add relationships
     def ==(other)
       other.instance_of?(self.class) &&
-        other.name == name &&
-        other.table == table &&
-        other.sorted_constraints == sorted_constraints &&
-        other.sorted_partitioners == sorted_partitioners &&
-        other.sorted_models == sorted_models
+        other.name == name && other.table == table && children_are_equal(other)
     end
     alias eql? ==
 
@@ -94,6 +89,7 @@ module Dbee
       [
         name.hash,
         table.hash,
+        relationships.hash,
         sorted_constraints.hash,
         sorted_partitioners.hash,
         sorted_models.hash
@@ -115,6 +111,13 @@ module Dbee
 
     def name_hash(array)
       array.map { |a| [a.name, a] }.to_h
+    end
+
+    def children_are_equal(other)
+      other.relationships == relationships &&
+        other.sorted_constraints == sorted_constraints &&
+        other.sorted_partitioners == sorted_partitioners &&
+        other.sorted_models == sorted_models
     end
 
     def ensure_input_is_valid
