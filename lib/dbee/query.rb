@@ -50,6 +50,7 @@ module Dbee
     def ==(other)
       other.instance_of?(self.class) &&
         other.limit == limit &&
+        other.from == from &&
         other.sorted_fields == sorted_fields &&
         other.sorted_filters == sorted_filters &&
         other.sorted_sorters == sorted_sorters
