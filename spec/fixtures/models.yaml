@@ -120,6 +120,89 @@ Theaters, Members, and Movies:
                   name: genre
                   value: comedy
 
+# Note that since converting from the tree does not have as much context as
+# converting from the DSL, the resulting graph is a bit different.
+Theaters, Members, and Movies from Tree:
+  theater:
+    table: theaters
+    relationships:
+      - name: members
+        constraints:
+          - type: reference
+            parent: id
+            name: tid
+          - type: reference
+            parent: partition
+            name: partition
+      - name: parent_theater
+        constraints:
+          - type: reference
+            name: id
+            parent: parent_theater_id
+  members:
+    relationships:
+      - name: demos
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+      - name: movies
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+      - name: favorite_comic_movies
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+          - type: static
+            name: genre
+            value: comic
+      - name: favorite_mystery_movies
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+          - type: static
+            name: genre
+            value: mystery
+      - name: favorite_comedy_movies
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+          - type: static
+            name: genre
+            value: comedy
+  demos:
+    table: demographics
+    relationships:
+      - name: phone_numbers
+        constraints:
+          - type: reference
+            parent: id
+            name: demographic_id
+  phone_numbers:
+  movies:
+  favorite_comic_movies:
+    table: movies
+  favorite_mystery_movies:
+    table: movies
+  favorite_comedy_movies:
+    table: movies
+  parent_theater:
+    table: theaters
+    relationships:
+      - name: members
+        constraints:
+          - type: reference
+            parent: id
+            name: tid
+          - type: reference
+            parent: partition
+            name: partition
+
 Theaters, Members, and Movies Directed Graph Based with Nested Sub-models:
   theaters:
     relationships:
@@ -136,17 +219,6 @@ Theaters, Members, and Movies Directed Graph Based with Nested Sub-models:
           - type: reference
             name: id
             parent: parent_theater_id
-  parent_theater:
-    table: theaters
-    relationships:
-      - name: members
-        constraints:
-          - type: reference
-            parent: id
-            name: tid
-          - type: reference
-            parent: partition
-            name: partition
   members:
     relationships:
       - name: demos
@@ -197,6 +269,17 @@ Theaters, Members, and Movies Directed Graph Based with Nested Sub-models:
             name: demographic_id
   phone_numbers:
   movies:
+  parent_theater:
+    table: theaters
+    relationships:
+      - name: members
+        constraints:
+          - type: reference
+            parent: id
+            name: tid
+          - type: reference
+            parent: partition
+            name: partition
 
 Readme:
   name: practice

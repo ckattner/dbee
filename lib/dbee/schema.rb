@@ -18,8 +18,8 @@ module Dbee
     def initialize(schema_config)
       init_models_by_name(schema_config)
 
-      @graph = RGL::DirectedAdjacencyGraph.new
-      build_graph
+      # @graph = RGL::DirectedAdjacencyGraph.new
+      # build_graph
 
       freeze
     end
