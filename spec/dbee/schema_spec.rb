@@ -30,16 +30,6 @@ describe Dbee::Schema do
 
   let(:subject) { described_class.new(schema_config) }
 
-  it 'knows if two models are related' do
-    pending 'extract this logic into a visualization class'
-    # subject.write_to_graphic_file
-    expect(subject.neighbors?(theaters_model, members_model)).to be(true)
-    expect(subject.neighbors?(members_model, demographics_model)).to be(true)
-
-    # Theaters and demographics related through members and are not direct neighbors.
-    expect(subject.neighbors?(theaters_model, demographics_model)).to be(false)
-  end
-
   describe '#expand_query_path' do
     specify 'one model case' do
       expect(subject.expand_query_path(members_model, Dbee::KeyPath.new('id'))).to eq []

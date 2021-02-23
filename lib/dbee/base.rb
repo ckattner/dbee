@@ -7,7 +7,6 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'dsl_schema_builder'
 require_relative 'dsl/association_builder'
 require_relative 'dsl/association'
 require_relative 'dsl/methods'
@@ -26,15 +25,6 @@ module Dbee
       # Returns the smallest needed `Dbee::Schema` for the provided key_chain.
       def to_schema(key_chain)
         DslSchemaBuilder.new(self, key_chain).to_schema
-      end
-
-      def to_model_non_recursive(name = nil, constraints = [])
-        Model.make(
-          constraints: constraints,
-          name: derived_name(name),
-          partitioners: inherited_partitioners,
-          table: inherited_table_name
-        )
       end
 
       def inherited_table_name
@@ -62,10 +52,6 @@ module Dbee
 
       def inflected_table_name(name)
         inflector.pluralize(inflector.underscore(inflector.demodulize(name)))
-      end
-
-      def derived_name(name)
-        name.to_s.empty? ? inflected_class_name : name.to_s
       end
     end
   end

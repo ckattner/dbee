@@ -13,19 +13,10 @@ module Dbee
     attr_reader :models
 
     extend Forwardable
-    def_delegators :graph, :write_to_graphic_file
-
     def initialize(schema_config)
       init_models_by_name(schema_config)
 
-      # @graph = RGL::DirectedAdjacencyGraph.new
-      # build_graph
-
       freeze
-    end
-
-    def neighbors?(model_a, model_b)
-      graph.adjacent_vertices(model_a).any? { |neighbor| neighbor == model_b }
     end
 
     # TODO: document me!
@@ -55,33 +46,11 @@ module Dbee
 
     private
 
-    attr_reader :graph, :models_by_name
-
-    def expand_join_path(query_path, init_expanded_path)
-      query_path.each_with_object(init_expanded_path) do |path_name, expanded_path|
-        previous_path = expanded_path.keys.last
-        previous_model = expanded_path[previous_path]
-        relationship = relationship_for_name!(previous_model, path_name)
-
-        model = model_for_name!(relationship.model_name)
-        path = previous_path + [path_name]
-
-        expanded_path[path] = model
-      end
-    end
+    attr_reader :models_by_name
 
     def relationship_for_name!(model, rel_name)
       model.relationship_for_name(rel_name) ||
         raise("model '#{model.name}' does not have a '#{rel_name}' relationship")
-    end
-
-    # TODO: split out aliases into their own nodes
-    def build_graph
-      models_by_name.each do |_name, model|
-        model.relationships.each do |relationship|
-          graph.add_edge(model, model_for_name!(relationship.model_name))
-        end
-      end
     end
 
     def init_models_by_name(schema_config)

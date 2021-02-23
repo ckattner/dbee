@@ -55,6 +55,12 @@ describe Dbee::Model do
     end
   end
 
+  describe '#to_s' do
+    it 'is represented by the model name' do
+      expect(described_class.new(name: 'foo').to_s).to eq 'foo'
+    end
+  end
+
   describe '#ancestors' do
     let(:yaml_entities) { yaml_fixture('models.yaml') }
 

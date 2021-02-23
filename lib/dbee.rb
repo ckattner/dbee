@@ -10,12 +10,10 @@
 require 'acts_as_hashable'
 require 'dry/inflector'
 require 'forwardable'
-require 'rgl/adjacency'
-require 'rgl/dot'
 
 require_relative 'dbee/base'
 require_relative 'dbee/constant_resolver'
-require_relative 'dbee/dsl_schema'
+require_relative 'dbee/dsl_schema_builder'
 require_relative 'dbee/key_chain'
 require_relative 'dbee/key_path'
 require_relative 'dbee/model'
