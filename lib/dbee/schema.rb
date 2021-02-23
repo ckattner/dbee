@@ -88,9 +88,18 @@ module Dbee
       @models_by_name = {}
 
       schema_config.each do |model_name, model_config|
-        args = (model_config || {}).merge('name' => model_name)
-        @models_by_name[model_name.to_s] = Model.make(args)
+        @models_by_name[model_name.to_s] = ensure_model_with_name(model_name, model_config)
       end
+    end
+
+    def ensure_model_with_name(model_name, model_config)
+      if model_config.respond_to?(:name)
+        raise ArgumentError, "Expected model name #{model_name}, got #{model_config.name}" \
+          if model_name != model_config.name
+
+        return model_config
+      end
+      Model.make((model_config || {}).merge('name' => model_name))
     end
   end
 end

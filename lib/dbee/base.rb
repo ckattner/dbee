@@ -7,8 +7,9 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'dsl/association'
+require_relative 'dsl_schema_builder'
 require_relative 'dsl/association_builder'
+require_relative 'dsl/association'
 require_relative 'dsl/methods'
 require_relative 'dsl/reflectable'
 
@@ -22,31 +23,37 @@ module Dbee
     BASE_CLASS_CONSTANT = Dbee::Base
 
     class << self
+      # Returns the smallest needed `Dbee::Schema` for the provided key_chain.
+      def to_schema(key_chain)
+        DslSchemaBuilder.new(self, key_chain).to_schema
+      end
+
+      # TODO: move these into a Compatibility module:
+      # <b>DEPRECATED:</b> Please use <tt>to_schema</tt> instead.
+      #
       # This method is cycle-resistant due to the fact that it is a requirement to send in a
       # key_chain.  That means each model produced using to_model is specific to a set of desired
       # fields.  Basically, you cannot derive a Model from a Base subclass without the context
       # of a Query.  This is not true for configuration-first Model definitions because, in that
       # case, cycles do not exist since the nature of the configuration is flat.
       def to_model(key_chain, name = nil, constraints = [], path_parts = [])
-        derived_name  = name.to_s.empty? ? inflected_class_name : name.to_s
-        key           = [key_chain, derived_name, constraints, path_parts]
+        warn '[DEPRECATION] `to_model` is deprecated.  Please use `to_schema` instead.'
+        key = [key_chain, derived_name(name), constraints, path_parts]
 
         to_models[key] ||= Model.make(
           model_config(
             key_chain,
-            derived_name,
+            derived_name(name),
             constraints,
             path_parts + [name]
           )
         )
       end
 
-      def to_model_non_recursive(name = nil)
-        derived_name = name.to_s.empty? ? inflected_class_name : name.to_s
-
+      def to_model_non_recursive(name = nil, constraints = [])
         Model.make(
-          # constraints: constraints,
-          name: derived_name,
+          constraints: constraints,
+          name: derived_name(name),
           partitioners: inherited_partitioners,
           table: inherited_table_name
         )
@@ -105,6 +112,10 @@ module Dbee
 
       def inflected_table_name(name)
         inflector.pluralize(inflector.underscore(inflector.demodulize(name)))
+      end
+
+      def derived_name(name)
+        name.to_s.empty? ? inflected_class_name : name.to_s
       end
     end
   end

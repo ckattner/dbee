@@ -18,15 +18,15 @@ describe Dbee::Schema do
   end
 
   let(:model_name) do
-    'Theaters, Members, and Movies Directed Graph Based with Nested Sub-models'
+    'Theaters, Members, and Movies from DSL'
   end
   let(:schema_config) { yaml_fixture('models.yaml')[model_name] }
 
-  let(:demographics_model) { make_model('demographics') }
-  let(:members_model) { make_model('members') }
-  let(:movies_model) { make_model('movies') }
-  let(:phone_numbers_model) { make_model('phone_numbers') }
-  let(:theaters_model) { make_model('theaters') }
+  let(:demographics_model) { make_model('demographic') }
+  let(:members_model) { make_model('member') }
+  let(:movies_model) { make_model('movie') }
+  let(:phone_numbers_model) { make_model('phone_number') }
+  let(:theaters_model) { make_model('theater') }
 
   let(:subject) { described_class.new(schema_config) }
 
@@ -66,7 +66,7 @@ describe Dbee::Schema do
     it 'raises an error given an unknown relationship' do
       expect do
         subject.expand_query_path(theaters_model, Dbee::KeyPath.new('demographics.id'))
-      end.to raise_error("model 'theaters' does not have a 'demographics' relationship")
+      end.to raise_error("model 'theater' does not have a 'demographics' relationship")
     end
   end
 end

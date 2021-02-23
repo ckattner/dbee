@@ -203,10 +203,12 @@ Theaters, Members, and Movies from Tree:
             parent: partition
             name: partition
 
-Theaters, Members, and Movies Directed Graph Based with Nested Sub-models:
-  theaters:
+Theaters, Members, and Movies from DSL:
+  theater:
+    table: theaters
     relationships:
       - name: members
+        model: member
         constraints:
           - type: reference
             parent: id
@@ -215,25 +217,28 @@ Theaters, Members, and Movies Directed Graph Based with Nested Sub-models:
             parent: partition
             name: partition
       - name: parent_theater
+        model: theater
         constraints:
           - type: reference
             name: id
             parent: parent_theater_id
-  members:
+  member:
+    table: members
     relationships:
-      - name: demos
-        model: demographics
+      - name: movies
+        model: movie
         constraints:
           - type: reference
             parent: id
             name: member_id
-      - name: movies
+      - name: demos
+        model: demographic
         constraints:
           - type: reference
             parent: id
             name: member_id
       - name: favorite_comic_movies
-        model: movies
+        model: movie
         constraints:
           - type: reference
             parent: id
@@ -242,7 +247,7 @@ Theaters, Members, and Movies Directed Graph Based with Nested Sub-models:
             name: genre
             value: comic
       - name: favorite_mystery_movies
-        model: movies
+        model: movie
         constraints:
           - type: reference
             parent: id
@@ -251,7 +256,7 @@ Theaters, Members, and Movies Directed Graph Based with Nested Sub-models:
             name: genre
             value: mystery
       - name: favorite_comedy_movies
-        model: movies
+        model: movie
         constraints:
           - type: reference
             parent: id
@@ -259,27 +264,19 @@ Theaters, Members, and Movies Directed Graph Based with Nested Sub-models:
           - type: static
             name: genre
             value: comedy
-  demographics:
+  demographic:
     table: demographics
     relationships:
       - name: phone_numbers
+        model: phone_number
         constraints:
           - type: reference
             parent: id
             name: demographic_id
-  phone_numbers:
-  movies:
-  parent_theater:
-    table: theaters
-    relationships:
-      - name: members
-        constraints:
-          - type: reference
-            parent: id
-            name: tid
-          - type: reference
-            parent: partition
-            name: partition
+  phone_number:
+    table: phone_numbers
+  movie:
+    table: movies
 
 Readme:
   name: practice

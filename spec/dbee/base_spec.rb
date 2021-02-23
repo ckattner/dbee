@@ -11,6 +11,34 @@ require 'spec_helper'
 require 'fixtures/models'
 
 describe Dbee::Base do
+  describe '#to_schema' do
+    it 'compiles correctly' do
+      model_name      = 'Theaters, Members, and Movies from DSL'
+      expected_config = yaml_fixture('models.yaml')[model_name]
+
+      expected_schema = Dbee::Schema.new(expected_config)
+
+      key_paths = %w[
+        members.a
+        members.demos.phone_numbers.a
+        members.movies.b
+        members.favorite_comic_movies.c
+        members.favorite_mystery_movies.d
+        members.favorite_comedy_movies.e
+        parent_theater.members.demos.phone_numbers.f
+        parent_theater.members.movies.g
+        parent_theater.members.favorite_comic_movies.h
+        parent_theater.members.favorite_mystery_movies.i
+        parent_theater.members.favorite_comedy_movies.j
+      ]
+
+      key_chain = Dbee::KeyChain.new(key_paths)
+
+      actual_schema = Models::Theater.to_schema(key_chain)
+      expect(actual_schema).to eq(expected_schema)
+    end
+  end
+
   describe '#to_model' do
     it 'compiles correctly' do
       model_name      = 'Theaters, Members, and Movies'
