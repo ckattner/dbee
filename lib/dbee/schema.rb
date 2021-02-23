@@ -19,14 +19,14 @@ module Dbee
       freeze
     end
 
-    # Given a `Dbee::Model` and `Dbee::KeyPath`, this returns a list of
-    # `Dbee::Relationship` and `Dbee::Model` pairs that lie on the key path.
+    # Given a Dbee::Model and Dbee::KeyPath, this returns a list of
+    # Dbee::Relationship and Dbee::Model pairs that lie on the key path.
     # The returned list will always have an even number of elements, always in
     # the form of relationship, model, relationship2, model2, etc. The
     # relationships and models correspond to each ancestor part of the key
     # path.
     #
-    # The key_path argument can be either a `Dbee::KeyPath` or an array of
+    # The key_path argument can be either a Dbee::KeyPath or an array of
     # string ancestor names.
     #
     # An exception is raised of the provided key_path contains relationship

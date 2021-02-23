@@ -8,16 +8,16 @@
 #
 
 module Dbee
-  # This creates a `Dbee::Schema` from a variety of different inputs:
+  # This creates a Dbee::Schema from a variety of different inputs:
   #
   # 1. The hash representation of a schema.
-  # 2. A `Dbee::Base` subclass (code based models).
+  # 2. A Dbee::Base subclass (code based models).
   #
   # For backward compatibility, tree based models are also supported in the
   # following formats:
   #
   # 3. The hash representation of a tree based model.
-  # 4. `Dbee::Model` instances in tree based form (using the deprecated constraints and models
+  # 4. Dbee::Model instances in tree based form (using the deprecated constraints and models
   #    attributes).
   class SchemaCreator # :nodoc:
     attr_reader :schema
@@ -29,7 +29,7 @@ module Dbee
       freeze
     end
 
-    # Returns a `Dbee::Query` instance with a "from" attribute which is
+    # Returns a Dbee::Query instance with a "from" attribute which is
     # sometimes derived for tree based models.
     def query
       return orig_query unless from_model

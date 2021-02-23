@@ -22,7 +22,7 @@ module Dbee
     BASE_CLASS_CONSTANT = Dbee::Base
 
     class << self
-      # Returns the smallest needed `Dbee::Schema` for the provided key_chain.
+      # Returns the smallest needed Dbee::Schema for the provided key_chain.
       def to_schema(key_chain)
         DslSchemaBuilder.new(self, key_chain).to_schema
       end
