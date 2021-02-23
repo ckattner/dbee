@@ -8,7 +8,10 @@
 #
 
 module Dbee
-  # Converts a tree based model to a Schema.
+  # Converts a tree based model to a Schema. Note that this results in a
+  # different but compatible schema compared to the result of generating a
+  # `Dbee::Schema` by calling `to_schema` on a `Dbee::Base` class. This is
+  # because converting from a tree based model is a lossy conversion.
   class SchemaFromTreeBasedModel # :nodoc:
     class << self
       def convert(tree_model)

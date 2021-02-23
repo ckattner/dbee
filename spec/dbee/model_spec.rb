@@ -64,7 +64,7 @@ describe Dbee::Model do
   describe '#ancestors' do
     let(:yaml_entities) { yaml_fixture('models.yaml') }
 
-    let(:entity_hash) { yaml_entities['Theaters, Members, and Movies'] }
+    let(:entity_hash) { yaml_entities['Theaters, Members, and Movies Tree Based'] }
 
     subject { described_class.make(entity_hash) }
 
@@ -98,7 +98,7 @@ describe Dbee::Model do
   end
 
   describe 'equality' do
-    let(:config) { yaml_fixture('models.yaml')['Theaters, Members, and Movies'] }
+    let(:config) { yaml_fixture('models.yaml')['Theaters, Members, and Movies Tree Based'] }
     let(:model1) { described_class.make(config) }
     let(:model2) { described_class.make(config) }
 

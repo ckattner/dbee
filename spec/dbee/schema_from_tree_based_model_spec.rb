@@ -12,7 +12,7 @@ require 'fixtures/models'
 
 describe Dbee::SchemaFromTreeBasedModel do
   let(:tree_config) do
-    Dbee::Model.make(yaml_fixture('models.yaml')['Theaters, Members, and Movies'])
+    Dbee::Model.make(yaml_fixture('models.yaml')['Theaters, Members, and Movies Tree Based'])
   end
   let(:schema_config) do
     yaml_fixture('models.yaml')['Theaters, Members, and Movies from Tree']
