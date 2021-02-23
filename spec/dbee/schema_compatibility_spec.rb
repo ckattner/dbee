@@ -100,10 +100,11 @@ describe Dbee::SchemaCompatibility do
     end
 
     it 'creates a schema from a Dbee::Base constant' do
-      pending 'requires Dbee::Base to Schema support'
-      model_constant = Models::Theater
+      expected_config = yaml_fixture('models.yaml')['Partitioner Example 1']
+      expected_schema = Dbee::Schema.new(expected_config)
+      model_constant = PartitionerExamples::Dog
 
-      expect(described_class.new(model_constant, query).schema).to eq some_schema
+      expect(described_class.new(model_constant, query).schema).to eq expected_schema
     end
   end
 end

@@ -15,8 +15,8 @@ module Dbee
     attr_reader :schema
 
     def initialize(schema_or_model, query)
-      @schema = make_schema(schema_or_model)
       @orig_query = Query.make(query)
+      @schema = make_schema(schema_or_model)
 
       freeze
     end
@@ -50,6 +50,7 @@ module Dbee
     end
 
     def to_object(input)
+      return input.to_schema(orig_query.key_chain) if input.respond_to?(:to_schema)
       return input unless input.is_a?(Hash)
 
       if input.key?(:models) && input[:models].is_a?(Array)
