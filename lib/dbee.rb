@@ -20,7 +20,7 @@ require_relative 'dbee/model'
 require_relative 'dbee/providers'
 require_relative 'dbee/query'
 require_relative 'dbee/schema'
-require_relative 'dbee/schema_compatibility'
+require_relative 'dbee/schema_creator'
 require_relative 'dbee/schema_from_tree_based_model'
 
 # Top-level namespace that provides the main public API.
@@ -36,7 +36,7 @@ module Dbee
     end
 
     def sql(schema_or_model, query_input, provider)
-      schema_compat = SchemaCompatibility.new(schema_or_model, query_input)
+      schema_compat = SchemaCreator.new(schema_or_model, query_input)
       query = schema_compat.query
       raise ArgumentError, 'query requires a from model name' unless query.from
 

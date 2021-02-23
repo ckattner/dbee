@@ -31,7 +31,7 @@ module Dbee
       name:,
       constraints: [], # Exists here for tree based model backward compatibility.
       relationships: [],
-      models: [],
+      models: [],      # Exists here for tree based model backward compatibility.
       partitioners: [],
       table: ''
     )

@@ -8,10 +8,18 @@
 #
 
 module Dbee
-  # Backward compatibility layer for tree based models and queries. Accepts
-  # both the new graph based schemas and the old tree based models and ensures
-  # that a valid schema and corresponding query are returned.
-  class SchemaCompatibility # :nodoc:
+  # This creates a `Dbee::Schema` from a variety of different inputs:
+  #
+  # 1. The hash representation of a schema.
+  # 2. A `Dbee::Base` subclass (code based models).
+  #
+  # For backward compatibility, tree based models are also supported in the
+  # following formats:
+  #
+  # 3. The hash representation of a tree based model.
+  # 4. `Dbee::Model` instances in tree based form (using the deprecated constraints and models
+  #    attributes).
+  class SchemaCreator # :nodoc:
     attr_reader :schema
 
     def initialize(schema_or_model, query)
@@ -21,6 +29,8 @@ module Dbee
       freeze
     end
 
+    # Returns a `Dbee::Query` instance with a "from" attribute which is
+    # sometimes derived for tree based models.
     def query
       return orig_query unless from_model
 
@@ -39,6 +49,7 @@ module Dbee
 
     def make_schema(input)
       return input if input.is_a?(Dbee::Schema)
+      return input.to_schema(orig_query.key_chain) if input.respond_to?(:to_schema)
 
       model_or_schema = to_object(input)
       if model_or_schema.is_a?(Model)
@@ -50,7 +61,6 @@ module Dbee
     end
 
     def to_object(input)
-      return input.to_schema(orig_query.key_chain) if input.respond_to?(:to_schema)
       return input unless input.is_a?(Hash)
 
       if input.key?(:models) && input[:models].is_a?(Array)

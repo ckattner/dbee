@@ -10,7 +10,7 @@
 require 'spec_helper'
 require 'fixtures/models'
 
-describe Dbee::SchemaCompatibility do
+describe Dbee::SchemaCreator do
   let(:model_hash_graph) do
     {
       'model1' => {
@@ -75,7 +75,7 @@ describe Dbee::SchemaCompatibility do
       expect(described_class.new(model_hash_tree, query).schema).to eq schema
     end
 
-    it 'creates a schema from a model' do
+    it 'creates a schema from a Dbee::Model' do
       expect(described_class.new(model_tree, query).schema).to eq schema
     end
 
