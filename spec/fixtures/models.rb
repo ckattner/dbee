@@ -8,9 +8,7 @@
 #
 
 module Models
-  class Movie < Dbee::Base
-    child :phone_numbers
-  end
+  class Movie < Dbee::Base; end
 
   class PhoneNumber < Dbee::Base; end
 

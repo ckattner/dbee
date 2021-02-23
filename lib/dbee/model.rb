@@ -29,7 +29,7 @@ module Dbee
 
     def initialize(
       name:,
-      constraints: [],
+      constraints: [], # Exists here for tree based model backward compatibility.
       relationships: [],
       models: [],
       partitioners: [],

@@ -19,9 +19,19 @@ module Dbee
       freeze
     end
 
-    # TODO: document me!
+    # Given a `Dbee::Model` and `Dbee::KeyPath`, this returns a list of
+    # `Dbee::Relationship` and `Dbee::Model` pairs that lie on the key path.
+    # The returned list will always have an even number of elements, always in
+    # the form of relationship, model, relationship2, model2, etc. The
+    # relationships and models correspond to each ancestor part of the key
+    # path.
+    #
+    # The key_path argument can be either a `Dbee::KeyPath` or an array of
+    # string ancestor names.
+    #
+    # An exception is raised of the provided key_path contains relationship
+    # names that do not exist in this schema.
     def expand_query_path(model, key_path, query_path = [])
-      # accept both a Dbeee::KeyPath and an array
       ancestors = key_path.respond_to?(:ancestor_names) ? key_path.ancestor_names : key_path
       relationship_name = ancestors.first
       return query_path unless relationship_name

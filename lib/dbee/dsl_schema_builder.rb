@@ -9,7 +9,7 @@
 
 module Dbee
   # Builds a Dbee::Schema given a Dbee::Base (DSL) model. Note that this class
-  # does not exist in the Dsl module as it does used for defining the DSL
+  # does not exist in the "Dsl" module as it is not used for defining the DSL
   # itself.
   class DslSchemaBuilder # :nodoc:
     attr_reader :dsl_model, :key_chain

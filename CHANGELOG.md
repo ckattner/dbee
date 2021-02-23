@@ -2,7 +2,7 @@
 
 ### Additions
 
-* Support for graph based models.
+* Support for graph based models. This paves the way for representing more advanced features, such as sub-queries in a more clear way. Since graph based models are similar to DSL models, the hope is that they will be easier to work with and understand.
 
 ### Breaking Changes
 
