@@ -279,6 +279,57 @@ Theaters, Members, and Movies from DSL:
     table: movies
 
 Readme:
+  practice:
+    table: practices
+    relationships:
+      - name: patients
+        model: patient
+        constraints:
+          - type: reference
+            name: practice_id
+            parent: id
+  patient:
+    table: patients
+    relationships:
+      - name: notes
+        model: note
+        constraints:
+          - type: reference
+            name: patient_id
+            parent: id
+      - name: work_phone_number
+        model: phone_number
+        constraints:
+          - type: reference
+            name: patient_id
+            parent: id
+          - type: static
+            name: phone_number_type
+            value: work
+      - name: cell_phone_number
+        model: phone_number
+        constraints:
+          - type: reference
+            name: patient_id
+            parent: id
+          - type: static
+            name: phone_number_type
+            value: cell
+      - name: fax_phone_number
+        model: phone_number
+        constraints:
+          - type: reference
+            name: patient_id
+            parent: id
+          - type: static
+            name: phone_number_type
+            value: fax
+  note:
+    table: notes
+  phone_number:
+    table: phones
+
+Readme Tree Based:
   name: practice
   table: practices
   models:
@@ -320,63 +371,51 @@ Readme:
             - type: static
               name: phone_number_type
               value: fax
+
 Cycle Example:
-  name: a
-  table: as
-  models:
-    - name: b1
-      table: bs
-      models:
-        - name: c
-          table: cs
-          models:
-            - name: a
-              table: as
-        - name: d
-          table: ds
-          models:
-            - name: a
-              table: as
-    - name: b2
-      table: bs
-      models:
-        - name: c
-          table: cs
-          models:
-            - name: a
-              table: as
-        - name: d
-          table: ds
-          models:
-            - name: a
-              table: as
-              models:
-                - name: b1
-                  table: bs
-                  models:
-                    - name: c
-                      table: cs
+  a:
+    table: as
+    relationships:
+      - name: b1
+        model: b
+      - name: b2
+        model: b
+  b:
+    table: bs
+    relationships:
+      - name: c
+      - name: d
+  c:
+    table: cs
+    relationships:
+      - name: a
+  d:
+    table: ds
+    relationships:
+      - name: a
 
 Partitioner Example 1:
-  name: dog
-  table: animals
-  partitioners:
-    - name: type
-      value: Dog
-    - name: deleted
-      value: false
+  dog:
+    table: animals
+    partitioners:
+      - name: type
+        value: Dog
+      - name: deleted
+        value: false
 
 Partitioner Example 2:
-  name: owner
-  table: owners
-  models:
-    - name: dogs
-      table: animals
-      constraints:
-        - name: owner_id
-          parent: id
-      partitioners:
-        - name: type
-          value: Dog
-        - name: deleted
-          value: false
+  owner:
+    table: owners
+    relationships:
+      - name: dogs
+        model: dog
+        constraints:
+          - name: owner_id
+            parent: id
+  dog:
+    table: animals
+    partitioners:
+      - name: type
+        value: Dog
+      - name: deleted
+        value: false

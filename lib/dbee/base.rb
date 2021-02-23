@@ -28,28 +28,6 @@ module Dbee
         DslSchemaBuilder.new(self, key_chain).to_schema
       end
 
-      # TODO: move these into a Compatibility module:
-      # <b>DEPRECATED:</b> Please use <tt>to_schema</tt> instead.
-      #
-      # This method is cycle-resistant due to the fact that it is a requirement to send in a
-      # key_chain.  That means each model produced using to_model is specific to a set of desired
-      # fields.  Basically, you cannot derive a Model from a Base subclass without the context
-      # of a Query.  This is not true for configuration-first Model definitions because, in that
-      # case, cycles do not exist since the nature of the configuration is flat.
-      def to_model(key_chain, name = nil, constraints = [], path_parts = [])
-        warn '[DEPRECATION] `to_model` is deprecated.  Please use `to_schema` instead.'
-        key = [key_chain, derived_name(name), constraints, path_parts]
-
-        to_models[key] ||= Model.make(
-          model_config(
-            key_chain,
-            derived_name(name),
-            constraints,
-            path_parts + [name]
-          )
-        )
-      end
-
       def to_model_non_recursive(name = nil, constraints = [])
         Model.make(
           constraints: constraints,
@@ -81,34 +59,6 @@ module Dbee
       end
 
       private
-
-      def model_config(key_chain, name, constraints, path_parts)
-        {
-          constraints: constraints,
-          models: associations(key_chain, path_parts),
-          name: name,
-          partitioners: inherited_partitioners,
-          table: inherited_table_name
-        }
-      end
-
-      def associations(key_chain, path_parts)
-        inherited_associations.select { |c| key_chain.ancestor_path?(path_parts, c.name) }
-                              .map do |association|
-          model_constant = association.model_constant
-
-          model_constant.to_model(
-            key_chain,
-            association.name,
-            association.constraints,
-            path_parts
-          )
-        end
-      end
-
-      def to_models
-        @to_models ||= {}
-      end
 
       def inflected_table_name(name)
         inflector.pluralize(inflector.underscore(inflector.demodulize(name)))

@@ -22,4 +22,10 @@ describe Dbee::SchemaFromTreeBasedModel do
     expected_schema = Dbee::Schema.new(schema_config)
     expect(described_class.convert(tree_config)).to eq expected_schema
   end
+
+  it 'does not raise any errors when converting the readme model' do
+    tree_config = Dbee::Model.make(yaml_fixture('models.yaml')['Readme Tree Based'])
+
+    expect { described_class.convert(tree_config) }.not_to raise_error
+  end
 end

@@ -9,6 +9,7 @@
 
 require 'yaml'
 require 'pry'
+require 'pry-byebug'
 
 RSpec.configure do |config|
   # Allow for disabling auto focus mode in certain environments like CI to
