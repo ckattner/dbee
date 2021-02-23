@@ -284,6 +284,7 @@ Cats:
 The Query API (Dbee::Query) is a simplified and abstract way to model an SQL query.  A Query has the following components:
 
 * fields (SELECT)
+* from (FROM)
 * filters (WHERE)
 * sorters (ORDER BY)
 * limit (LIMIT/TAKE)
@@ -300,6 +301,7 @@ Get all practices:
 
 ````ruby
 query = {
+  from: 'practice',
   fields: [
     { key_path: 'id' },
     { key_path: 'active' },
@@ -312,6 +314,7 @@ Get all practices, limit to 10, and sort by name (descending) then id (ascending
 
 ````ruby
 query = {
+  from: 'practice',
   fields: [
     { key_path: 'id' },
     { key_path: 'active' },
@@ -329,6 +332,7 @@ Get top 5 active practices and patient whose name start with 'Sm':
 
 ````ruby
 query = {
+  from: 'practice',
   fields: [
     { key_path: 'name', display: 'Practice Name' },
     { key_path: 'patients.first', display: 'Patient First Name' },
@@ -347,6 +351,7 @@ Get practice IDs, patient IDs, names, and cell phone numbers that starts with '5
 
 ````ruby
 query = {
+  from: 'practice',
   fields: [
     { key_path: 'id', display: 'Practice ID #' },
     { key_path: 'patients.id', display: 'Patient ID #' },
@@ -382,7 +387,7 @@ require 'dbee/providers/active_record_provider'
 class Practice < Dbee::Base; end
 
 provider = Dbee::Providers::ActiveRecordProvider.new
-query    = {}
+query    = { from: 'practice' }
 sql      = Dbee.sql(Practice, query, provider)
 ````
 
@@ -398,6 +403,7 @@ class Practice < Dbee::Base; end
 provider = Dbee::Providers::ActiveRecordProvider.new
 
 query = {
+  from: 'practice',
   fields: [
     { key_path: 'id' },
     { key_path: 'active' },
@@ -416,10 +422,11 @@ require 'dbee/providers/active_record_provider'
 provider = Dbee::Providers::ActiveRecordProvider.new
 
 model = {
-  name: :practice
+  practice: { table: 'practices' }
 }
 
 query = {
+  from: 'practice',
   fields: [
     { key_path: 'id' },
     { key_path: 'active' },
@@ -439,19 +446,24 @@ Fields can be configured to use aggregation by setting its `aggregator` attribut
 **Data Model**:
 
 ````yaml
-name: practice
-models:
-  - name: patients
-    constraints:
-      - type: reference
-        name: practice_id
-        parent: id
+practice:
+  table: practices
+  relationships:
+    - name: patients
+      model: patient
+      constraints:
+        - type: reference
+          name: practice_id
+          parent: id
+patient:
+  table: patients
 ````
 
 **Query**:
 
 ````ruby
 query = {
+  from: 'practice',
   fields: [
     {
       key_path: 'id',
@@ -501,19 +513,21 @@ id | patient_id | key             | value
 **Model Configuration**:
 
 ````yaml
-name: patients
-models:
-  - name: patient_fields
-    constraints:
-      - type: reference
-        parent: id
-        name: patient_id
+patients:
+  relationships:
+    - patient_fields:
+      constraints:
+        - type: reference
+          parent: id
+          name: patient_id
+patient_fields:
 ````
 
 **Query**:
 
 ````ruby
 query = {
+  from: 'patients',
   fields: [
     {
       key_path: 'id',
@@ -604,6 +618,10 @@ In version three of this gem, the representation of configuration based models w
               value: fax
 ````
 
+Also note to further maintain backwards compatibility, queries issued against
+tree based models do not need the "from" attribute to be defined. This is
+because the from/starting point of the query can be inferred as the model at
+the root of the tree.
 ## Contributing
 
 ### Development Environment Configuration
