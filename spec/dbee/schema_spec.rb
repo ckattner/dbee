@@ -36,7 +36,7 @@ describe Dbee::Schema do
     end
 
     specify 'two model case' do
-      expected_path = [members_model.relationship_for_name('movies'), movies_model]
+      expected_path = [[members_model.relationship_for_name('movies'), movies_model]]
       expect(
         subject.expand_query_path(members_model, Dbee::KeyPath.new('movies.id'))
       ).to eq expected_path
@@ -44,8 +44,8 @@ describe Dbee::Schema do
 
     it 'traverses aliased models' do
       expected_path = [
-        members_model.relationship_for_name('demos'), demographics_model,
-        demographics_model.relationship_for_name('phone_numbers'), phone_numbers_model
+        [members_model.relationship_for_name('demos'), demographics_model],
+        [demographics_model.relationship_for_name('phone_numbers'), phone_numbers_model]
       ]
 
       expect(

@@ -20,11 +20,11 @@ module Dbee
     end
 
     # Given a Dbee::Model and Dbee::KeyPath, this returns a list of
-    # Dbee::Relationship and Dbee::Model pairs that lie on the key path.
-    # The returned list will always have an even number of elements, always in
-    # the form of relationship, model, relationship2, model2, etc. The
-    # relationships and models correspond to each ancestor part of the key
-    # path.
+    # Dbee::Relationship and Dbee::Model tuples that lie on the key path.
+    # The returned list is a two dimensional array in
+    # the form of <tt>[[relationship, model], [relationship2, model2]]</tt>,
+    # etc. The relationships and models correspond to each ancestor part of the
+    # key path.
     #
     # The key_path argument can be either a Dbee::KeyPath or an array of
     # string ancestor names.
@@ -41,7 +41,7 @@ module Dbee
       expand_query_path(
         join_model,
         ancestors.drop(1),
-        query_path + [relationship_for_name!(model, relationship_name), join_model]
+        query_path + [[relationship_for_name!(model, relationship_name), join_model]]
       )
     end
 
