@@ -15,18 +15,37 @@ describe Dbee do
     let(:provider) { Dbee::Providers::NullProvider.new }
     let(:query_hash) do
       {
+        from: 'my_model',
         fields: [
           { key_path: :a }
         ]
       }
     end
-
     let(:query) { Dbee::Query.make(query_hash) }
+    let(:schema) { Dbee::Schema.new({}) }
 
-    it 'requires the query to have a from model' do
+    it 'accepts a query hash and a Schema and passes them into provider#sql' do
+      expect(provider).to receive(:sql).with(schema, query)
+
+      described_class.sql(schema, query_hash, provider)
+    end
+
+    it 'does not allow a nil schema' do
       expect do
-        described_class.sql(Dbee::Schema.new({}), query, provider)
-      end.to raise_error(ArgumentError, /query requires a from model name/)
+        described_class.sql(nil, query, provider)
+      end.to raise_error ArgumentError, /schema or model is required/
+    end
+
+    it 'does not allow a nil query' do
+      expect do
+        described_class.sql(schema, nil, provider)
+      end.to raise_error ArgumentError, /query is required/
+    end
+
+    it 'does not allow a nil provider' do
+      expect do
+        described_class.sql(schema, query, nil)
+      end.to raise_error ArgumentError, /provider is required/
     end
   end
 end

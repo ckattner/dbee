@@ -40,10 +40,7 @@ module Dbee
       end
 
       def add_relationship_to_parent_model(model, graph_model_attrs)
-        graph_model_attrs[:relationships].push({
-                                                 name: model.name,
-                                                 constraints: model.constraints
-                                               })
+        graph_model_attrs[:relationships].push(name: model.name, constraints: model.constraints)
       end
     end
   end

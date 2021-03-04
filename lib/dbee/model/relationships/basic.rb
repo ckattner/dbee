@@ -17,7 +17,9 @@ module Dbee
         attr_reader :constraints, :model, :name
 
         def initialize(name:, constraints: [], model: nil)
-          @name = name || raise(ArgumentError, 'name is required')
+          @name = name
+          raise ArgumentError, 'name is required' if name.to_s.empty?
+
           @constraints = Constraints.array(constraints || []).uniq
           @model = model
 

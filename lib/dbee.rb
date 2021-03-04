@@ -36,11 +36,12 @@ module Dbee
     end
 
     def sql(schema_or_model, query_input, provider)
-      schema_compat = SchemaCreator.new(schema_or_model, query_input)
-      query = schema_compat.query
-      raise ArgumentError, 'query requires a from model name' unless query.from
+      raise ArgumentError, 'a schema or model is required' unless schema_or_model
+      raise ArgumentError, 'a query is required' unless query_input
+      raise ArgumentError, 'a provider is required' unless provider
 
-      provider.sql(schema_compat.schema, query)
+      schema_compat = SchemaCreator.new(schema_or_model, query_input)
+      provider.sql(schema_compat.schema, schema_compat.query)
     end
   end
 end

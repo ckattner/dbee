@@ -40,7 +40,7 @@ module Dbee
     )
       @fields  = Field.array(fields)
       @filters = Filters.array(filters).uniq
-      @from    = from
+      @from    = from.to_s
       @limit   = limit.to_s.empty? ? nil : limit.to_i
       @sorters = Sorters.array(sorters).uniq
 

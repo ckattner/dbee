@@ -52,13 +52,16 @@ describe Dbee::SchemaCreator do
 
   let(:query_hash) do
     {
+      from: 'model1',
       fields: [
         { key_path: :a }
       ]
     }
   end
-
   let(:query) { Dbee::Query.make(query_hash) }
+
+  let(:query_hash_no_from) { query_hash.slice(:fields) }
+  let(:query_no_from) { Dbee::Query.make(query_hash_no_from) }
 
   describe 'query parsing' do
     it 'passes through Dbee::Query instances' do
@@ -67,6 +70,20 @@ describe Dbee::SchemaCreator do
 
     it 'creates a Dbee::Query from a query hash' do
       expect(described_class.new(schema, query_hash).query).to eq query
+    end
+
+    describe 'the "from" field' do
+      it 'raises an error when nil' do
+        expect do
+          described_class.new(schema, query_hash_no_from)
+        end.to raise_error(ArgumentError, 'query requires a from model name')
+      end
+
+      it 'raises an error when the empty string' do
+        expect do
+          described_class.new(schema, query_hash_no_from.merge(from: ''))
+        end.to raise_error(ArgumentError, 'query requires a from model name')
+      end
     end
   end
 
@@ -79,14 +96,21 @@ describe Dbee::SchemaCreator do
       expect(described_class.new(model_tree, query).schema).to eq schema
     end
 
-    it 'returns a query with the "from" field equal to the name of the root model of the tree' do
-      # Sanity check
-      query = Dbee::Query.new(query_hash)
-      expect(query.from).to be_nil
+    describe 'query "from" field' do
+      it 'is set using name of the root model of the tree' do
+        expect(described_class.new(model_tree, query_no_from).query).to eq query
+      end
 
-      query_with_from = Dbee::Query.new(query_hash.merge(from: model_tree.name))
+      it 'raises an error the query "from" does not equal the root model name' do
+        query_hash_different_from = query_hash_no_from.merge(from: :bogus_model)
 
-      expect(described_class.new(model_tree, query).query).to eq query_with_from
+        expect do
+          described_class.new(model_tree, query_hash_different_from)
+        end.to raise_error(
+          ArgumentError,
+          "expected from model to be 'model1' but got 'bogus_model'"
+        )
+      end
     end
   end
 
