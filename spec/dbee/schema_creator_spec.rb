@@ -88,12 +88,21 @@ describe Dbee::SchemaCreator do
   end
 
   describe 'tree based models' do
-    it 'creates a schema from a hash model' do
-      expect(described_class.new(model_hash_tree, query).schema).to eq schema
-    end
-
     it 'creates a schema from a Dbee::Model' do
       expect(described_class.new(model_tree, query).schema).to eq schema
+    end
+
+    describe 'hash detection' do
+      it 'creates a schema from a hash model' do
+        expect(described_class.new(model_hash_tree, query).schema).to eq schema
+      end
+
+      it 'creates a schema from a minimal hash model with no child models' do
+        minimal_tree_hash = { name: :practice }
+        minimal_schema =  Dbee::Schema.new(practice: nil)
+
+        expect(described_class.new(minimal_tree_hash, {}).schema).to eq minimal_schema
+      end
     end
 
     describe 'query "from" field' do

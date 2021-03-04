@@ -75,8 +75,7 @@ module Dbee
     def to_object(input)
       return input unless input.is_a?(Hash)
 
-      if input.key?(:models) && input[:models].is_a?(Array)
-        # This is a tree based model:
+      if tree_based_hash?(input)
         Model.make(input)
       else
         Schema.new(input)
@@ -89,6 +88,14 @@ module Dbee
           ArgumentError,
           "expected from model to be '#{expected_from_model}' but got '#{orig_query.from}'"
         )
+    end
+
+    def tree_based_hash?(hash)
+      name = hash[:name] || hash['name']
+
+      # In the unlikely event that schema based hash had a model called "name",
+      # its value would either be nil or a hash.
+      name.is_a?(String) || name.is_a?(Symbol)
     end
   end
 end
