@@ -132,12 +132,31 @@ describe Dbee::SchemaCreator do
       expect(described_class.new(schema, query).schema).to eq schema
     end
 
-    it 'creates a schema from a Dbee::Base constant' do
-      expected_config = yaml_fixture('models.yaml')['Partitioner Example 1']
-      expected_schema = Dbee::Schema.new(expected_config)
-      model_constant = PartitionerExamples::Dog
+    describe 'when given a Dbee::Base class' do
+      let(:dsl_model_class) { PartitionerExamples::Dog }
 
-      expect(described_class.new(model_constant, query).schema).to eq expected_schema
+      it 'creates a schema' do
+        expected_config = yaml_fixture('models.yaml')['Partitioner Example 1']
+        expected_schema = Dbee::Schema.new(expected_config)
+        dog_query = Dbee::Query.make(query_hash_no_from.merge(from: :dog))
+
+        expect(described_class.new(dsl_model_class, dog_query).schema).to eq expected_schema
+      end
+
+      it "can infer the query's 'from' field" do
+        expect(described_class.new(dsl_model_class, query_no_from).query.from).to eq 'dog'
+      end
+
+      it 'raises an error the query "from" does not equal the DSL model name' do
+        cat_query = Dbee::Query.make(query_hash_no_from.merge(from: :cat))
+
+        expect do
+          described_class.new(dsl_model_class, cat_query)
+        end.to raise_error(
+          ArgumentError,
+          "expected from model to be 'dog' but got 'cat'"
+        )
+      end
     end
   end
 end

@@ -61,7 +61,11 @@ module Dbee
       @expected_from_model = orig_query.from
 
       return input if input.is_a?(Dbee::Schema)
-      return input.to_schema(orig_query.key_chain) if input.respond_to?(:to_schema)
+
+      if input.respond_to?(:to_schema)
+        @expected_from_model = input.inflected_class_name
+        return input.to_schema(orig_query.key_chain)
+      end
 
       model_or_schema = to_object(input)
       if model_or_schema.is_a?(Model)
