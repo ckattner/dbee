@@ -55,6 +55,40 @@ describe Dbee::Model do
     end
   end
 
+  describe '.make_keyed_by' do
+    it 'returns a hash of Models where the keys equal the names of the models' do
+      input = {
+        model1: nil,
+        model2: { table: :model2_table }
+      }
+      expected_result = {
+        model1: described_class.new(name: :model1),
+        model2: described_class.new(name: :model2, table: 'model2_table')
+      }
+
+      expect(described_class.make_keyed_by(:name, input)).to eq expected_result
+    end
+
+    it 'accepts values of Dbee::Model instances' do
+      input = { model1: described_class.new(name: :model1) }
+      expected_result = { model1: described_class.new(name: :model1) }
+      expect(described_class.make_keyed_by(:name, input)).to eq expected_result
+    end
+
+    it 'accepts values of Dbee::Model instances when the key attribute is a string' do
+      input = { model1: described_class.new(name: 'model1') }
+      expected_result = { model1: described_class.new(name: 'model1') }
+      expect(described_class.make_keyed_by(:name, input)).to eq expected_result
+    end
+
+    it 'raises an error when the input hash key is not equal to the name of the model' do
+      input = { model1: described_class.new(name: :bogus) }
+      expect do
+        described_class.make_keyed_by(:name, input)
+      end.to raise_error ArgumentError, "expected a name of 'model1' but got 'bogus'"
+    end
+  end
+
   describe '#to_s' do
     it 'is represented by the model name' do
       expect(described_class.new(name: 'foo').to_s).to eq 'foo'

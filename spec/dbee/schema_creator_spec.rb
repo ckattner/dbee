@@ -98,8 +98,8 @@ describe Dbee::SchemaCreator do
       end
 
       it 'creates a schema from a minimal hash model with no child models' do
-        minimal_tree_hash = { name: :practice }
-        minimal_schema =  Dbee::Schema.new(practice: nil)
+        minimal_tree_hash = { name: 'practice' }
+        minimal_schema =  Dbee::Schema.new('practice' => nil)
 
         expect(described_class.new(minimal_tree_hash, {}).schema).to eq minimal_schema
       end
