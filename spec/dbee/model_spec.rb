@@ -62,8 +62,8 @@ describe Dbee::Model do
         model2: { table: :model2_table }
       }
       expected_result = {
-        model1: described_class.new(name: :model1),
-        model2: described_class.new(name: :model2, table: 'model2_table')
+        'model1' => described_class.new(name: 'model1'),
+        'model2' => described_class.new(name: 'model2', table: 'model2_table')
       }
 
       expect(described_class.make_keyed_by(:name, input)).to eq expected_result
@@ -71,13 +71,13 @@ describe Dbee::Model do
 
     it 'accepts values of Dbee::Model instances' do
       input = { model1: described_class.new(name: :model1) }
-      expected_result = { model1: described_class.new(name: :model1) }
+      expected_result = { 'model1' => described_class.new(name: :model1) }
       expect(described_class.make_keyed_by(:name, input)).to eq expected_result
     end
 
     it 'accepts values of Dbee::Model instances when the key attribute is a string' do
-      input = { model1: described_class.new(name: 'model1') }
-      expected_result = { model1: described_class.new(name: 'model1') }
+      input = { 'model1' => described_class.new(name: 'model1') }
+      expected_result = { 'model1' => described_class.new(name: 'model1') }
       expect(described_class.make_keyed_by(:name, input)).to eq expected_result
     end
 

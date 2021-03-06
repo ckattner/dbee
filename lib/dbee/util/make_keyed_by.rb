@@ -13,9 +13,12 @@ module Dbee
     # concept of a "make" method.
     module MakeKeyedBy # :nodoc:
       # Given a hash of hashes or a hash of values of instances of this class,
-      # a hash is returned where all of the values are instances of this class.
+      # a hash is returned where all of the values are instances of this class
+      # and the keys are the string versions of the original hash.
+      #
       # An ArgumentError is raised if the value's <tt>key_attrib</tt> is not
-      # equal to the top level hash key.
+      # equal to the top level hash key. This ensures that the
+      # <tt>key_attrib</tt> is the same in the incoming hash and the value.
       #
       # This is useful for cases where it makes sense in the configuration
       # (YAML) specification to represent certain objects in a hash structure
@@ -24,7 +27,8 @@ module Dbee
         # Once Ruby 2.5 support is dropped, this can just use the block form of
         # #to_h.
         spec_hash.map do |key, spec|
-          [key, make_value_checking_key_attib!(key_attrib, key, spec)]
+          string_key = key.to_s
+          [string_key, make_value_checking_key_attib!(key_attrib, string_key, spec)]
         end.to_h
       end
 
@@ -32,7 +36,7 @@ module Dbee
 
       def make_value_checking_key_attib!(key_attrib, key, spec)
         if spec.is_a?(self)
-          if spec.send(key_attrib).to_s != key.to_s
+          if spec.send(key_attrib).to_s != key
             err_msg = "expected a #{key_attrib} of '#{key}' but got '#{spec.send(key_attrib)}'"
             raise ArgumentError, err_msg
           end
