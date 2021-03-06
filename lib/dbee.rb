@@ -36,8 +36,6 @@ module Dbee
     end
 
     def sql(schema_or_model, query_input, provider)
-      raise ArgumentError, 'a schema or model is required' unless schema_or_model
-      raise ArgumentError, 'a query is required' unless query_input
       raise ArgumentError, 'a provider is required' unless provider
 
       schema_compat = SchemaCreator.new(schema_or_model, query_input)

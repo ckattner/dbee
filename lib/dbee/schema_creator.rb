@@ -25,7 +25,9 @@ module Dbee
     # An ArgumentError is raised if the query "from" attribute differs from the name of the root
     # model of a tree based model or if the "from" attribute is blank.
     def initialize(schema_or_model, query)
-      @orig_query = Query.make(query)
+      @orig_query = Query.make(query) || raise(ArgumentError, 'query is required')
+      raise ArgumentError, 'a schema or model is required' unless schema_or_model
+
       @schema = make_schema(schema_or_model)
 
       # Note that for backward compatibility reasons, this validation does not
