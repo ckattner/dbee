@@ -126,7 +126,7 @@ Theaters, Members, and Movies from Tree:
   theater:
     table: theaters
     relationships:
-      - name: members
+      members:
         constraints:
           - type: reference
             parent: id
@@ -134,24 +134,24 @@ Theaters, Members, and Movies from Tree:
           - type: reference
             parent: partition
             name: partition
-      - name: parent_theater
+      parent_theater:
         constraints:
           - type: reference
             name: id
             parent: parent_theater_id
   members:
     relationships:
-      - name: demos
+      demos:
         constraints:
           - type: reference
             parent: id
             name: member_id
-      - name: movies
+      movies:
         constraints:
           - type: reference
             parent: id
             name: member_id
-      - name: favorite_comic_movies
+      favorite_comic_movies:
         constraints:
           - type: reference
             parent: id
@@ -159,7 +159,7 @@ Theaters, Members, and Movies from Tree:
           - type: static
             name: genre
             value: comic
-      - name: favorite_mystery_movies
+      favorite_mystery_movies:
         constraints:
           - type: reference
             parent: id
@@ -167,7 +167,7 @@ Theaters, Members, and Movies from Tree:
           - type: static
             name: genre
             value: mystery
-      - name: favorite_comedy_movies
+      favorite_comedy_movies:
         constraints:
           - type: reference
             parent: id
@@ -178,7 +178,7 @@ Theaters, Members, and Movies from Tree:
   demos:
     table: demographics
     relationships:
-      - name: phone_numbers
+      phone_numbers:
         constraints:
           - type: reference
             parent: id
@@ -194,7 +194,7 @@ Theaters, Members, and Movies from Tree:
   parent_theater:
     table: theaters
     relationships:
-      - name: members
+      members:
         constraints:
           - type: reference
             parent: id
@@ -207,7 +207,7 @@ Theaters, Members, and Movies from DSL:
   theater:
     table: theaters
     relationships:
-      - name: members
+      members:
         model: member
         constraints:
           - type: reference
@@ -216,7 +216,7 @@ Theaters, Members, and Movies from DSL:
           - type: reference
             parent: partition
             name: partition
-      - name: parent_theater
+      parent_theater:
         model: theater
         constraints:
           - type: reference
@@ -225,19 +225,19 @@ Theaters, Members, and Movies from DSL:
   member:
     table: members
     relationships:
-      - name: movies
+      movies:
         model: movie
         constraints:
           - type: reference
             parent: id
             name: member_id
-      - name: demos
+      demos:
         model: demographic
         constraints:
           - type: reference
             parent: id
             name: member_id
-      - name: favorite_comic_movies
+      favorite_comic_movies:
         model: movie
         constraints:
           - type: reference
@@ -246,7 +246,7 @@ Theaters, Members, and Movies from DSL:
           - type: static
             name: genre
             value: comic
-      - name: favorite_mystery_movies
+      favorite_mystery_movies:
         model: movie
         constraints:
           - type: reference
@@ -255,7 +255,7 @@ Theaters, Members, and Movies from DSL:
           - type: static
             name: genre
             value: mystery
-      - name: favorite_comedy_movies
+      favorite_comedy_movies:
         model: movie
         constraints:
           - type: reference
@@ -267,7 +267,7 @@ Theaters, Members, and Movies from DSL:
   demographic:
     table: demographics
     relationships:
-      - name: phone_numbers
+      phone_numbers:
         model: phone_number
         constraints:
           - type: reference
@@ -282,7 +282,7 @@ Readme:
   practice:
     table: practices
     relationships:
-      - name: patients
+      patients:
         model: patient
         constraints:
           - type: reference
@@ -291,13 +291,13 @@ Readme:
   patient:
     table: patients
     relationships:
-      - name: notes
+      notes:
         model: note
         constraints:
           - type: reference
             name: patient_id
             parent: id
-      - name: work_phone_number
+      work_phone_number:
         model: phone_number
         constraints:
           - type: reference
@@ -306,7 +306,7 @@ Readme:
           - type: static
             name: phone_number_type
             value: work
-      - name: cell_phone_number
+      cell_phone_number:
         model: phone_number
         constraints:
           - type: reference
@@ -315,7 +315,7 @@ Readme:
           - type: static
             name: phone_number_type
             value: cell
-      - name: fax_phone_number
+      fax_phone_number:
         model: phone_number
         constraints:
           - type: reference
@@ -376,23 +376,23 @@ Cycle Example:
   a:
     table: as
     relationships:
-      - name: b1
+      b1:
         model: b
-      - name: b2
+      b2:
         model: b
   b:
     table: bs
     relationships:
-      - name: c
-      - name: d
+      c:
+      d:
   c:
     table: cs
     relationships:
-      - name: a
+      a:
   d:
     table: ds
     relationships:
-      - name: a
+      a:
 
 Partitioner Example 1:
   dog:
@@ -407,7 +407,7 @@ Partitioner Example 2:
   owner:
     table: owners
     relationships:
-      - name: dogs
+      dogs:
         model: dog
         constraints:
           - name: owner_id

@@ -192,7 +192,7 @@ You can choose to alternatively describe your data model using configuration.  T
 practice:
   table: practices
   relationships:
-    - name: patients
+    patients:
       model: patient
       constraints:
         - type: reference
@@ -201,13 +201,13 @@ practice:
 patient:
   table: patients
   relationships:
-    - name: notes
+    notes:
       model: note
       constraints:
         - type: reference
           name: patient_id
           parent: id
-    - name: work_phone_number
+    work_phone_number:
       model: phone_number
       constraints:
         - type: reference
@@ -216,7 +216,7 @@ patient:
         - type: static
           name: phone_number_type
           value: work
-    - name: cell_phone_number
+    cell_phone_number:
       model: phone_number
       constraints:
         - type: reference
@@ -225,7 +225,7 @@ patient:
         - type: static
           name: phone_number_type
           value: cell
-    - name: fax_phone_number
+    fax_phone_number:
       model: phone_number
       constraints:
         - type: reference
@@ -449,7 +449,7 @@ Fields can be configured to use aggregation by setting its `aggregator` attribut
 practice:
   table: practices
   relationships:
-    - name: patients
+    patients:
       model: patient
       constraints:
         - type: reference

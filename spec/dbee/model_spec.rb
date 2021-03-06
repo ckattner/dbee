@@ -131,33 +131,40 @@ describe Dbee::Model do
     end
   end
 
-  describe 'equality' do
-    let(:config) { yaml_fixture('models.yaml')['Theaters, Members, and Movies Tree Based'] }
-    let(:model1) { described_class.make(config) }
-    let(:model2) { described_class.make(config) }
+  equality_cases = {
+    tree_based: yaml_fixture('models.yaml')['Theaters, Members, and Movies Tree Based'],
+    graph_based: yaml_fixture('models.yaml')['Theaters, Members, and Movies from DSL']['theater']
+  }
+  equality_cases[:graph_based].merge!(name: 'theaters')
 
-    subject { described_class.make(config) }
+  equality_cases.each do |test_case, config|
+    describe "equality for #{test_case}" do
+      let(:model1) { described_class.make(config) }
+      let(:model2) { described_class.make(config) }
 
-    specify 'equality compares attributes' do
-      expect(model1).to eq(model2)
-      expect(model1).to eql(model2)
-    end
+      subject { described_class.make(config) }
 
-    it 'returns false unless comparing same object types' do
-      expect(subject).not_to eq(config)
-      expect(subject).not_to eq(nil)
-    end
-
-    describe 'hash codes' do
-      specify 'are equal when objects are equal' do
+      specify 'equality compares attributes' do
         expect(model1).to eq(model2)
-        expect(model1.hash).to eq(model2.hash)
+        expect(model1).to eql(model2)
       end
 
-      specify 'are not equal when objects are not equal' do
-        different_model = described_class.new(name: :oddball)
-        expect(model1).not_to eq(different_model)
-        expect(model1.hash).not_to eq(different_model.hash)
+      it 'returns false unless comparing same object types' do
+        expect(subject).not_to eq(config)
+        expect(subject).not_to eq(nil)
+      end
+
+      describe 'hash codes' do
+        specify 'are equal when objects are equal' do
+          expect(model1).to eq(model2)
+          expect(model1.hash).to eq(model2.hash)
+        end
+
+        specify 'are not equal when objects are not equal' do
+          different_model = described_class.new(name: :oddball)
+          expect(model1).not_to eq(different_model)
+          expect(model1.hash).not_to eq(different_model.hash)
+        end
       end
     end
   end
