@@ -48,29 +48,6 @@ module Dbee
       freeze
     end
 
-    # This recursive method will walk a path of model names (parts) and return back a
-    # flattened hash instead of a nested object structure.
-    # The hash key will be an array of strings (model names) and the value will be the
-    # identified model.
-    def ancestors!(parts = [], visited_parts = [], found = {})
-      return found if Array(parts).empty?
-
-      # Take the first entry in parts
-      model_name = parts.first.to_s
-
-      # Ensure we have it registered as a child, or raise error
-      model = assert_model(model_name, visited_parts)
-
-      # Push onto visited list
-      visited_parts += [model_name]
-
-      # Add found model to flattened structure
-      found[visited_parts] = model
-
-      # Recursively call for next parts in the chain
-      model.ancestors!(parts[1..-1], visited_parts, found)
-    end
-
     def relationship_for_name(relationship_name)
       relationships.find { |relationship| relationship.name == relationship_name }
     end
