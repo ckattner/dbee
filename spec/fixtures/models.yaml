@@ -1,4 +1,4 @@
-Theaters, Members, and Movies:
+Theaters, Members, and Movies Tree Based:
   name: theater
   table: theaters
   models:
@@ -119,7 +119,217 @@ Theaters, Members, and Movies:
                 - type: static
                   name: genre
                   value: comedy
+
+# Note that since converting from the tree does not have as much context as
+# converting from the DSL, the resulting graph is a bit different.
+Theaters, Members, and Movies from Tree:
+  theater:
+    table: theaters
+    relationships:
+      members:
+        constraints:
+          - type: reference
+            parent: id
+            name: tid
+          - type: reference
+            parent: partition
+            name: partition
+      parent_theater:
+        constraints:
+          - type: reference
+            name: id
+            parent: parent_theater_id
+  members:
+    relationships:
+      demos:
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+      movies:
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+      favorite_comic_movies:
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+          - type: static
+            name: genre
+            value: comic
+      favorite_mystery_movies:
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+          - type: static
+            name: genre
+            value: mystery
+      favorite_comedy_movies:
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+          - type: static
+            name: genre
+            value: comedy
+  demos:
+    table: demographics
+    relationships:
+      phone_numbers:
+        constraints:
+          - type: reference
+            parent: id
+            name: demographic_id
+  phone_numbers:
+  movies:
+  favorite_comic_movies:
+    table: movies
+  favorite_mystery_movies:
+    table: movies
+  favorite_comedy_movies:
+    table: movies
+  parent_theater:
+    table: theaters
+    relationships:
+      members:
+        constraints:
+          - type: reference
+            parent: id
+            name: tid
+          - type: reference
+            parent: partition
+            name: partition
+
+Theaters, Members, and Movies from DSL:
+  theater:
+    table: theaters
+    relationships:
+      members:
+        model: member
+        constraints:
+          - type: reference
+            parent: id
+            name: tid
+          - type: reference
+            parent: partition
+            name: partition
+      parent_theater:
+        model: theater
+        constraints:
+          - type: reference
+            name: id
+            parent: parent_theater_id
+  member:
+    table: members
+    relationships:
+      movies:
+        model: movie
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+      demos:
+        model: demographic
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+      favorite_comic_movies:
+        model: movie
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+          - type: static
+            name: genre
+            value: comic
+      favorite_mystery_movies:
+        model: movie
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+          - type: static
+            name: genre
+            value: mystery
+      favorite_comedy_movies:
+        model: movie
+        constraints:
+          - type: reference
+            parent: id
+            name: member_id
+          - type: static
+            name: genre
+            value: comedy
+  demographic:
+    table: demographics
+    relationships:
+      phone_numbers:
+        model: phone_number
+        constraints:
+          - type: reference
+            parent: id
+            name: demographic_id
+  phone_number:
+    table: phone_numbers
+  movie:
+    table: movies
+
 Readme:
+  practice:
+    table: practices
+    relationships:
+      patients:
+        model: patient
+        constraints:
+          - type: reference
+            name: practice_id
+            parent: id
+  patient:
+    table: patients
+    relationships:
+      notes:
+        model: note
+        constraints:
+          - type: reference
+            name: patient_id
+            parent: id
+      work_phone_number:
+        model: phone_number
+        constraints:
+          - type: reference
+            name: patient_id
+            parent: id
+          - type: static
+            name: phone_number_type
+            value: work
+      cell_phone_number:
+        model: phone_number
+        constraints:
+          - type: reference
+            name: patient_id
+            parent: id
+          - type: static
+            name: phone_number_type
+            value: cell
+      fax_phone_number:
+        model: phone_number
+        constraints:
+          - type: reference
+            name: patient_id
+            parent: id
+          - type: static
+            name: phone_number_type
+            value: fax
+  note:
+    table: notes
+  phone_number:
+    table: phones
+
+Readme Tree Based:
   name: practice
   table: practices
   models:
@@ -161,63 +371,51 @@ Readme:
             - type: static
               name: phone_number_type
               value: fax
+
 Cycle Example:
-  name: a
-  table: as
-  models:
-    - name: b1
-      table: bs
-      models:
-        - name: c
-          table: cs
-          models:
-            - name: a
-              table: as
-        - name: d
-          table: ds
-          models:
-            - name: a
-              table: as
-    - name: b2
-      table: bs
-      models:
-        - name: c
-          table: cs
-          models:
-            - name: a
-              table: as
-        - name: d
-          table: ds
-          models:
-            - name: a
-              table: as
-              models:
-                - name: b1
-                  table: bs
-                  models:
-                    - name: c
-                      table: cs
+  a:
+    table: as
+    relationships:
+      b1:
+        model: b
+      b2:
+        model: b
+  b:
+    table: bs
+    relationships:
+      c:
+      d:
+  c:
+    table: cs
+    relationships:
+      a:
+  d:
+    table: ds
+    relationships:
+      a:
 
 Partitioner Example 1:
-  name: dog
-  table: animals
-  partitioners:
-    - name: type
-      value: Dog
-    - name: deleted
-      value: false
+  dog:
+    table: animals
+    partitioners:
+      - name: type
+        value: Dog
+      - name: deleted
+        value: false
 
 Partitioner Example 2:
-  name: owner
-  table: owners
-  models:
-    - name: dogs
-      table: animals
-      constraints:
-        - name: owner_id
-          parent: id
-      partitioners:
-        - name: type
-          value: Dog
-        - name: deleted
-          value: false
+  owner:
+    table: owners
+    relationships:
+      dogs:
+        model: dog
+        constraints:
+          - name: owner_id
+            parent: id
+  dog:
+    table: animals
+    partitioners:
+      - name: type
+        value: Dog
+      - name: deleted
+        value: false

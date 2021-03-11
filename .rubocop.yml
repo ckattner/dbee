@@ -17,6 +17,9 @@ Metrics/BlockLength:
     - specify
     - define
 
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
 Metrics/ClassLength:
   Max: 125
 

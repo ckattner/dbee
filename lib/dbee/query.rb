@@ -23,6 +23,7 @@ module Dbee
 
     attr_reader :fields,
                 :filters,
+                :from,
                 :limit,
                 :sorters
 
@@ -32,12 +33,14 @@ module Dbee
 
     def initialize(
       fields: [],
+      from: nil,
       filters: [],
       limit: nil,
       sorters: []
     )
       @fields  = Field.array(fields)
       @filters = Filters.array(filters).uniq
+      @from    = from.to_s
       @limit   = limit.to_s.empty? ? nil : limit.to_i
       @sorters = Sorters.array(sorters).uniq
 
@@ -47,6 +50,7 @@ module Dbee
     def ==(other)
       other.instance_of?(self.class) &&
         other.limit == limit &&
+        other.from == from &&
         other.sorted_fields == sorted_fields &&
         other.sorted_filters == sorted_filters &&
         other.sorted_sorters == sorted_sorters

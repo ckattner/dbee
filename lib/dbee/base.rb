@@ -7,8 +7,8 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-require_relative 'dsl/association'
 require_relative 'dsl/association_builder'
+require_relative 'dsl/association'
 require_relative 'dsl/methods'
 require_relative 'dsl/reflectable'
 
@@ -22,23 +22,9 @@ module Dbee
     BASE_CLASS_CONSTANT = Dbee::Base
 
     class << self
-      # This method is cycle-resistant due to the fact that it is a requirement to send in a
-      # key_chain.  That means each model produced using to_model is specific to a set of desired
-      # fields.  Basically, you cannot derive a Model from a Base subclass without the context
-      # of a Query.  This is not true for configuration-first Model definitions because, in that
-      # case, cycles do not exist since the nature of the configuration is flat.
-      def to_model(key_chain, name = nil, constraints = [], path_parts = [])
-        derived_name  = name.to_s.empty? ? inflected_class_name(self.name) : name.to_s
-        key           = [key_chain, derived_name, constraints, path_parts]
-
-        to_models[key] ||= Model.make(
-          model_config(
-            key_chain,
-            derived_name,
-            constraints,
-            path_parts + [name]
-          )
-        )
+      # Returns the smallest needed Dbee::Schema for the provided key_chain.
+      def to_schema(key_chain)
+        DslSchemaBuilder.new(self, key_chain).to_schema
       end
 
       def inherited_table_name
@@ -58,42 +44,14 @@ module Dbee
         end
       end
 
+      def inflected_class_name
+        inflector.underscore(inflector.demodulize(name))
+      end
+
       private
-
-      def model_config(key_chain, name, constraints, path_parts)
-        {
-          constraints: constraints,
-          models: associations(key_chain, path_parts),
-          name: name,
-          partitioners: inherited_partitioners,
-          table: inherited_table_name
-        }
-      end
-
-      def associations(key_chain, path_parts)
-        inherited_associations.select { |c| key_chain.ancestor_path?(path_parts, c.name) }
-                              .map do |association|
-          model_constant = association.model_constant
-
-          model_constant.to_model(
-            key_chain,
-            association.name,
-            association.constraints,
-            path_parts
-          )
-        end
-      end
-
-      def to_models
-        @to_models ||= {}
-      end
 
       def inflected_table_name(name)
         inflector.pluralize(inflector.underscore(inflector.demodulize(name)))
-      end
-
-      def inflected_class_name(name)
-        inflector.underscore(inflector.demodulize(name))
       end
     end
   end

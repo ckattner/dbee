@@ -65,6 +65,7 @@ README_EXAMPLES = {
 describe Dbee::Query do
   let(:config) do
     {
+      from: 'my_model',
       fields: [
         { key_path: 'matt.nick.sam', display: 'some display' },
         { key_path: 'katie' },
