@@ -7,6 +7,8 @@
 ### Breaking Changes
 
 * The `to_model` method on `Dbee::Base` objects has been removed. Use `to_schema` instead.
+* The `ancestors!` method on `Dbee::Model` has been removed. Use `Dbee::Schema#expand_query_path` instead.
+
 # 2.1.1 (July 14th, 2020)
 
 * Removed guard that ensured a query has at least one field to establish a more rational base-case.

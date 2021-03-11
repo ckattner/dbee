@@ -95,48 +95,11 @@ describe Dbee::Model do
     end
   end
 
-  describe '#ancestors' do
-    let(:yaml_entities) { yaml_fixture('models.yaml') }
-
-    let(:entity_hash) { yaml_entities['Theaters, Members, and Movies Tree Based'] }
-
-    subject { described_class.make(entity_hash) }
-
-    specify 'returns proper models' do
-      members = subject.models.first
-
-      expected_plan = {
-        %w[members] => members
-      }
-
-      plan = subject.ancestors!(%w[members])
-
-      expect(plan).to eq(expected_plan)
-    end
-
-    specify 'returns proper multi-level models' do
-      members       = subject.models.first
-      demos         = members.models.first
-      phone_numbers = demos.models.first
-
-      expected_plan = {
-        %w[members] => members,
-        %w[members demos] => demos,
-        %w[members demos phone_numbers] => phone_numbers
-      }
-
-      plan = subject.ancestors!(%w[members demos phone_numbers])
-
-      expect(plan).to eq(expected_plan)
-    end
-  end
-
   equality_cases = {
     tree_based: yaml_fixture('models.yaml')['Theaters, Members, and Movies Tree Based'],
     graph_based: yaml_fixture('models.yaml')['Theaters, Members, and Movies from DSL']['theater']
   }
   equality_cases[:graph_based].merge!(name: 'theaters')
-
   equality_cases.each do |test_case, config|
     describe "equality for #{test_case}" do
       let(:model1) { described_class.make(config) }
