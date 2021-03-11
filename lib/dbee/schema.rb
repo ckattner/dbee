@@ -14,7 +14,7 @@ module Dbee
 
     extend Forwardable
     def initialize(schema_config)
-      init_models_by_name(schema_config)
+      @models_by_name = Model.make_keyed_by(:name, schema_config)
 
       freeze
     end
@@ -61,24 +61,6 @@ module Dbee
     def relationship_for_name!(model, rel_name)
       model.relationship_for_name(rel_name) ||
         raise("model '#{model.name}' does not have a '#{rel_name}' relationship")
-    end
-
-    def init_models_by_name(schema_config)
-      @models_by_name = {}
-
-      schema_config.each do |model_name, model_config|
-        @models_by_name[model_name.to_s] = ensure_model_with_name(model_name, model_config)
-      end
-    end
-
-    def ensure_model_with_name(model_name, model_config)
-      if model_config.respond_to?(:name)
-        raise ArgumentError, "Expected model name #{model_name}, got #{model_config.name}" \
-          if model_name != model_config.name
-
-        return model_config
-      end
-      Model.make((model_config || {}).merge('name' => model_name))
     end
   end
 end

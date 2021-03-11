@@ -8,12 +8,14 @@
 #
 
 require_relative 'relationships/basic'
+require_relative '../util/make_keyed_by'
 
 module Dbee
   class Model
     # Top-level class that allows for the making of relationships.
     class Relationships
       acts_as_hashable_factory
+      extend Dbee::Util::MakeKeyedBy
 
       register 'basic', Basic
       register '',      Basic # When type is not present this will be the default

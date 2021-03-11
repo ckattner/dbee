@@ -10,13 +10,15 @@
 require_relative 'model/constraints'
 require_relative 'model/partitioner'
 require_relative 'model/relationships'
+require_relative 'util/make_keyed_by'
 
 module Dbee
   # In DB terms, a Model is usually a table, but it does not have to be.  You can also re-model
   # your DB schema using Dbee::Models.
   class Model
-    extend Forwardable
     acts_as_hashable
+    extend Dbee::Util::MakeKeyedBy
+    extend Forwardable
 
     class ModelNotFoundError < StandardError; end
 
@@ -35,10 +37,9 @@ module Dbee
       partitioners: [],
       table: ''
     )
-      @name           = name.to_s
+      @name           = name
       @constraints    = Constraints.array(constraints || []).uniq
-      # TODO: raise an error if two relationships share a name
-      @relationships  = Relationships.array(relationships || []).to_set
+      @relationships  = Relationships.make_keyed_by(:name, relationships)
       @models_by_name = name_hash(Model.array(models))
       @partitioners   = Partitioner.array(partitioners).uniq
       @table          = table.to_s.empty? ? @name : table.to_s
@@ -49,7 +50,7 @@ module Dbee
     end
 
     def relationship_for_name(relationship_name)
-      relationships.find { |relationship| relationship.name == relationship_name }
+      relationships[relationship_name]
     end
 
     def ==(other)
@@ -80,11 +81,6 @@ module Dbee
     private
 
     attr_reader :models_by_name
-
-    def assert_model(model_name, visited_parts)
-      models_by_name[model_name] ||
-        raise(ModelNotFoundError, "Missing: #{model_name}, after: #{visited_parts}")
-    end
 
     def name_hash(array)
       array.map { |a| [a.name, a] }.to_h

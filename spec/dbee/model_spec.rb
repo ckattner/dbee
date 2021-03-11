@@ -55,39 +55,79 @@ describe Dbee::Model do
     end
   end
 
+  describe '.make_keyed_by' do
+    it 'returns a hash of Models where the keys equal the names of the models' do
+      input = {
+        model1: nil,
+        model2: { table: :model2_table }
+      }
+      expected_result = {
+        'model1' => described_class.new(name: 'model1'),
+        'model2' => described_class.new(name: 'model2', table: 'model2_table')
+      }
+
+      expect(described_class.make_keyed_by(:name, input)).to eq expected_result
+    end
+
+    it 'accepts values of Dbee::Model instances' do
+      input = { model1: described_class.new(name: :model1) }
+      expected_result = { 'model1' => described_class.new(name: :model1) }
+      expect(described_class.make_keyed_by(:name, input)).to eq expected_result
+    end
+
+    it 'accepts values of Dbee::Model instances when the key attribute is a string' do
+      input = { 'model1' => described_class.new(name: 'model1') }
+      expected_result = { 'model1' => described_class.new(name: 'model1') }
+      expect(described_class.make_keyed_by(:name, input)).to eq expected_result
+    end
+
+    it 'raises an error when the input hash key is not equal to the name of the model' do
+      input = { model1: described_class.new(name: :bogus) }
+      expect do
+        described_class.make_keyed_by(:name, input)
+      end.to raise_error ArgumentError, "expected a name of 'model1' but got 'bogus'"
+    end
+  end
+
   describe '#to_s' do
     it 'is represented by the model name' do
       expect(described_class.new(name: 'foo').to_s).to eq 'foo'
     end
   end
 
-  describe 'equality' do
-    let(:config) { yaml_fixture('models.yaml')['Theaters, Members, and Movies Tree Based'] }
-    let(:model1) { described_class.make(config) }
-    let(:model2) { described_class.make(config) }
+  equality_cases = {
+    tree_based: yaml_fixture('models.yaml')['Theaters, Members, and Movies Tree Based'],
+    graph_based: yaml_fixture('models.yaml')['Theaters, Members, and Movies from DSL']['theater']
+  }
+  equality_cases[:graph_based].merge!(name: 'theaters')
+  equality_cases.each do |test_case, config|
+    describe "equality for #{test_case}" do
+      let(:model1) { described_class.make(config) }
+      let(:model2) { described_class.make(config) }
 
-    subject { described_class.make(config) }
+      subject { described_class.make(config) }
 
-    specify 'equality compares attributes' do
-      expect(model1).to eq(model2)
-      expect(model1).to eql(model2)
-    end
-
-    it 'returns false unless comparing same object types' do
-      expect(subject).not_to eq(config)
-      expect(subject).not_to eq(nil)
-    end
-
-    describe 'hash codes' do
-      specify 'are equal when objects are equal' do
+      specify 'equality compares attributes' do
         expect(model1).to eq(model2)
-        expect(model1.hash).to eq(model2.hash)
+        expect(model1).to eql(model2)
       end
 
-      specify 'are not equal when objects are not equal' do
-        different_model = described_class.new(name: :oddball)
-        expect(model1).not_to eq(different_model)
-        expect(model1.hash).not_to eq(different_model.hash)
+      it 'returns false unless comparing same object types' do
+        expect(subject).not_to eq(config)
+        expect(subject).not_to eq(nil)
+      end
+
+      describe 'hash codes' do
+        specify 'are equal when objects are equal' do
+          expect(model1).to eq(model2)
+          expect(model1.hash).to eq(model2.hash)
+        end
+
+        specify 'are not equal when objects are not equal' do
+          different_model = described_class.new(name: :oddball)
+          expect(model1).not_to eq(different_model)
+          expect(model1.hash).not_to eq(different_model.hash)
+        end
       end
     end
   end

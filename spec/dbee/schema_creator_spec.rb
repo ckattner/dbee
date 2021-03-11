@@ -14,16 +14,17 @@ describe Dbee::SchemaCreator do
   let(:model_hash_graph) do
     {
       'model1' => {
-        relationships: [
-          name: 'model2',
-          constraints: [
-            {
-              type: 'reference',
-              parent: 'id',
-              name: 'model1_id'
-            }
-          ]
-        ]
+        relationships: {
+          model2: {
+            constraints: [
+              {
+                type: 'reference',
+                parent: 'id',
+                name: 'model1_id'
+              }
+            ]
+          }
+        }
       },
       'model2' => nil
     }

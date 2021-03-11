@@ -42,7 +42,7 @@ module Dbee
         name: dsl_model.inflected_class_name,
         partitioners: dsl_model.inherited_partitioners,
         table: dsl_model.inherited_table_name,
-        relationships: []
+        relationships: {}
       }
     end
 
@@ -52,11 +52,10 @@ module Dbee
 
       schema_spec[target_model.inflected_class_name] ||= model_config(target_model)
 
-      schema_spec[base_model.inflected_class_name][:relationships].push(
-        name: association.name,
+      schema_spec[base_model.inflected_class_name][:relationships][association.name] = {
         constraints: association.constraints,
         model: relationship_model_name(association, target_model)
-      )
+      }
 
       target_model
     end
