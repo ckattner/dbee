@@ -1,4 +1,4 @@
-# 3.0.0 (TBD)
+# 3.0.0 (March 11th, 2021)
 
 ### Additions
 
