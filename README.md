@@ -1,5 +1,7 @@
 # Dbee
 
+[![CircleCI](https://circleci.com/bb/bluemarble-ondemand/dbee/tree/master.svg?style=svg&circle-token=7f7afbea94912b2b75a889cae3e2c46a3a869d21)](https://circleci.com/bb/bluemarble-ondemand/dbee/tree/master)
+
 Dbee arose out of a need for an ad-hoc reporting solution that included:
 
 * serializable queries
