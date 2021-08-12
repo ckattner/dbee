@@ -17,15 +17,7 @@ Gem::Specification.new do |s|
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.bindir      = 'exe'
   s.executables = []
-  s.homepage    = 'https://github.com/bluemarblepayroll/dbee'
   s.license     = 'MIT'
-  s.metadata    = {
-    'bug_tracker_uri' => 'https://github.com/bluemarblepayroll/dbee/issues',
-    'changelog_uri' => 'https://github.com/bluemarblepayroll/dbee/blob/master/CHANGELOG.md',
-    'documentation_uri' => 'https://www.rubydoc.info/gems/dbee',
-    'homepage_uri' => s.homepage,
-    'source_code_uri' => s.homepage
-  }
 
   s.required_ruby_version = '>= 2.5'
 
@@ -37,6 +29,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('pry-byebug')
   s.add_development_dependency('rake', '~> 13')
   s.add_development_dependency('rspec')
+  s.add_development_dependency('rspec_junit_formatter')
   s.add_development_dependency('rubocop', '~> 1')
   s.add_development_dependency('rubocop-rake')
   s.add_development_dependency('rubocop-rspec')

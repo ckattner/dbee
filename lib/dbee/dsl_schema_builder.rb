@@ -37,7 +37,7 @@ module Dbee
 
     private
 
-    def model_config(dsl_model) #:nodoc:
+    def model_config(dsl_model) # :nodoc:
       {
         name: dsl_model.inflected_class_name,
         partitioners: dsl_model.inherited_partitioners,

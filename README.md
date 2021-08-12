@@ -1,7 +1,5 @@
 # Dbee
 
-[![Gem Version](https://badge.fury.io/rb/dbee.svg)](https://badge.fury.io/rb/dbee) [![Build Status](https://travis-ci.org/bluemarblepayroll/dbee.svg?branch=master)](https://travis-ci.org/bluemarblepayroll/dbee) [![Maintainability](https://api.codeclimate.com/v1/badges/208b36a1d13751687df9/maintainability)](https://codeclimate.com/github/bluemarblepayroll/dbee/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/208b36a1d13751687df9/test_coverage)](https://codeclimate.com/github/bluemarblepayroll/dbee/test_coverage) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 Dbee arose out of a need for an ad-hoc reporting solution that included:
 
 * serializable queries
@@ -25,7 +23,7 @@ This specific library is the core modeling component of the Dbee framework, but 
 To install through Rubygems:
 
 ````
-gem install install dbee
+gem install dbee
 ````
 
 You can also add this to your Gemfile:
@@ -661,7 +659,7 @@ Note: ensure you have proper authorization before trying to publish new versions
 After code changes have successfully gone through the Pull Request review process then the following steps should be followed for publishing new versions:
 
 1. Merge Pull Request into master
-2. Update `lib/dbee/version.rb` using [semantic versioning](https://semver.org/)
+2. Update `version.rb` using [semantic versioning](https://semver.org/)
 3. Install dependencies: `bundle`
 4. Update `CHANGELOG.md` with release notes
 5. Commit & push master to remote and ensure CI builds master successfully
