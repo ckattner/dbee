@@ -25,6 +25,7 @@ module Dbee
                 :filters,
                 :from,
                 :limit,
+                :offset,
                 :sorters
 
     def_delegator :fields,   :sort, :sorted_fields
@@ -36,12 +37,14 @@ module Dbee
       from: nil,
       filters: [],
       limit: nil,
+      offset: nil,
       sorters: []
     )
       @fields  = Field.array(fields)
       @filters = Filters.array(filters).uniq
       @from    = from.to_s
       @limit   = limit.to_s.empty? ? nil : limit.to_i
+      @offset  = offset.to_s.empty? ? nil : offset.to_i
       @sorters = Sorters.array(sorters).uniq
 
       freeze
@@ -50,6 +53,7 @@ module Dbee
     def ==(other)
       other.instance_of?(self.class) &&
         other.limit == limit &&
+        other.offset == offset &&
         other.from == from &&
         other.sorted_fields == sorted_fields &&
         other.sorted_filters == sorted_filters &&

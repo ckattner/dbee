@@ -17,7 +17,7 @@ README_EXAMPLES = {
       { key_path: 'name' }
     ]
   },
-  'Get all practices, limit to 10, and sort by name (descending) then id (ascending)' => {
+  'Get all practices, limit to 2, offset by 3, and sort by name (descending) then id (ascending)' => {
     fields: [
       { key_path: 'id' },
       { key_path: 'active' },
@@ -27,7 +27,8 @@ README_EXAMPLES = {
       { key_path: 'name', direction: :descending },
       { key_path: 'id' }
     ],
-    limit: 10
+    limit: 2,
+    offset: 3
   },
   "Get top 5 active practices and patient whose name start with 'Sm':" => {
     fields: [

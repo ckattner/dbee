@@ -1,3 +1,8 @@
+# 3.1.0 (October 4th, 2021)
+
+Additions
+
+* Added Query#offset to help with callers needing paging support.
 # 3.0.0 (March 11th, 2021)
 
 ### Additions

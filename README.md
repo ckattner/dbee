@@ -310,7 +310,7 @@ query = {
 }
 ````
 
-Get all practices, limit to 10, and sort by name (descending) then id (ascending):
+Get all practices, limit to 2, offset by 3, and sort by name (descending) then id (ascending):
 
 ````ruby
 query = {
@@ -324,7 +324,8 @@ query = {
     { key_path: 'name', direction: :descending },
     { key_path: 'id' }
   ],
-  limit: 10
+  limit: 2,
+  offset: 3
 }
 ````
 
