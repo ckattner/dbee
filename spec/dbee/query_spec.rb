@@ -17,7 +17,7 @@ README_EXAMPLES = {
       { key_path: 'name' }
     ]
   },
-  'Get all practices, limit to 2, offset by 3, and sort by name (descending) then id (ascending)' => {
+  'Get practices, limit to 2, offset by 3, and sort by name (descending) then id (ascending)' => {
     fields: [
       { key_path: 'id' },
       { key_path: 'active' },
